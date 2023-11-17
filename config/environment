@@ -1,0 +1,4 @@
+HADOOP_HOME=/opt/hadoop-3.3.6
+ZOOKEEPER_HOME=/opt/zookeeper-3.9.1-bin
+KAFKA_HOME=/opt/kafka_2.13-3.6.0
+JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre
