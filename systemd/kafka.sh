@@ -6,14 +6,10 @@ source /etc/environment
 
 echo "kafka.service: ## Starting ##" 
 
-while :
-do
-    TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
-    echo "try restarting kafka.service: timestamp ${TIMESTAMP}"
+TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
+echo "try restarting kafka.service: timestamp ${TIMESTAMP}"
 
-    ${KAFKA_HOME}/bin/zookeeper-server-start.sh -daemon ${KAFKA_HOME}/config/zookeeper.properties
-    ${KAFKA_HOME}/bin/kafka-server-start.sh -daemon ${KAFKA_HOME}/config/server.properties
-    ${HADOOP_HOME}/sbin/start-dfs.sh
+${KAFKA_HOME}/bin/zookeeper-server-start.sh -daemon ${KAFKA_HOME}/config/zookeeper.properties
+${KAFKA_HOME}/bin/kafka-server-start.sh -daemon ${KAFKA_HOME}/config/server.properties
+${HADOOP_HOME}/sbin/start-dfs.sh
 
-    sleep 60
-done
