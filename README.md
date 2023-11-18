@@ -28,3 +28,30 @@ Copy all configuration files to $HADOOP_HOME/etc/hadoop
 ```
 cp ./config/hadoop/* $HADOOP_HOME/etc/hadoop
 ```
+
+Start hdfs
+```
+$HADOOP_HOME/sbin/start-dfs.sh
+```
+
+# 4, Setup Apache Hive
+
+Init schema incase we do not have Hive metastore setup
+```
+$HIVE_HOME/bin/schematool -dbType derby -initSchema
+```
+
+Copy all configuration files to $HIVE_HOME/conf
+```
+cp ./config/hive/* $HIVE_HOME/conf
+```
+
+Start hiveserver2
+```
+$HIVE_HOME/bin/hiveserver2 
+```
+
+Enter beeline CLI to interact with hiveserver2
+```
+$HIVE_HOME/bin/beeline -u jdbc:hive2://localhost:10000/default
+```

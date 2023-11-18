@@ -1,0 +1,22 @@
+<configuration>
+    <property>
+        <name>hive.server2.thrift.port</name>
+        <value>10000</value>
+        <description>Port number for HiveServer2 Thrift server.</description>
+    </property>
+    <property>
+        <name>hive.server2.enable.doAs</name>
+        <value>false</value>
+        <description></description>
+    </property>
+    <property>
+        <name>hive.server2.enable.impersonation</name>
+        <value>false</value>
+        <description></description>
+    </property>
+    <property>
+        <name>hive.server2.logging.operation.log.location</name>
+        <value>$HIVE_HOME/logs/operation_logs</value>
+        <description></description>
+    </property>
+</configuration>
