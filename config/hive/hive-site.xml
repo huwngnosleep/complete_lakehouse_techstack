@@ -16,7 +16,53 @@
     </property>
     <property>
         <name>hive.server2.logging.operation.log.location</name>
-        <value>$HIVE_HOME/logs/operation_logs</value>
+        <value>/user/hive/operation_logs</value>
         <description></description>
     </property>
+    <property>
+        <name>hive.metastore.warehouse.dir</name>
+        <value>/user/hive/warehouse</value>
+        <description></description>
+    </property>
+    <property>
+        <name>hive.exec.scratchdir</name>
+        <value>/tmp</value>
+        <description></description>
+    </property>
+    
+    <!-- Hive Execution Engine Configuration -->
+    <property>
+        <name>hive.execution.engine</name>
+        <value>spark</value>
+        <description>Execution engine for Hive, set to spark for Spark.</description>
+    </property>
+
+    <!-- Spark Master Configuration -->
+    <property>
+        <name>spark.master</name>
+        <value>spark://localhost:7077</value>
+        <description>The URL of the Spark cluster manager. Use 'local' to run Spark on the local machine.</description>
+    </property>
+
+    <!-- Spark Deploy Mode Configuration -->
+    <property>
+        <name>spark.submit.deployMode</name>
+        <value>client</value>
+        <description>Whether to deploy the driver program locally ('client') or on one of the worker nodes ('cluster').</description>
+    </property>
+
+    <!-- Spark Home Configuration -->
+    <property>
+        <name>spark.home</name>
+        <value>$SPARK_HOME</value>
+        <description>Path to your Spark installation.</description>
+    </property>
+
+    <!-- Hive on Spark Specific Configuration -->
+    <property>
+        <name>spark.sql.warehouse.dir</name>
+        <value>/user/hive/warehouse</value>
+        <description>Location of Hive warehouse directory in HDFS.</description>
+    </property>
+
 </configuration>

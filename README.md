@@ -6,6 +6,7 @@ This is a demo of CDC from MySql database into Apache Iceberg table
 - Zookeeper 3.9.1 installation:
 - Hadoop 3.3.6 installation: https://dlcdn.apache.org/hadoop/common/hadoop-3.3.6/hadoop-3.3.6.tar.gz 
 - Hive 4.0.0 beta 1 installation: https://dlcdn.apache.org/hive/hive-4.0.0-beta-1/apache-hive-4.0.0-beta-1-bin.tar.gz
+- Spark 3.5.0 with Scala 2.13 installation: https://dlcdn.apache.org/spark/spark-3.5.0/spark-3.5.0-bin-hadoop3-scala2.13.tgz
 - MySQL and Adminer installation in docker-compose file
 
 
@@ -33,8 +34,22 @@ Start hdfs
 ```
 $HADOOP_HOME/sbin/start-dfs.sh
 ```
+Check HDFS UI at http://localhost:9870
 
-# 4, Setup Apache Hive
+# 4, Setup Apache Spark
+
+Copy all configuration files to $SPARK_HOME/conf
+```
+cp ./config/spark/* $SPARK_HOME/conf
+```
+
+Start spark local custer
+```
+$SPARK_HOME/sbin/start-all.sh
+```
+Check Spark Master UI at http://localhost:8080
+
+# 5, Setup Apache Hive
 
 Init schema incase we do not have Hive metastore setup
 ```
