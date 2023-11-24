@@ -49,6 +49,11 @@ $SPARK_HOME/sbin/start-all.sh
 ```
 Check Spark Master UI at http://localhost:8080
 
+Start SparkThrift
+```
+bash $SPARK_HOME/sbin/start-thriftserver.sh   --master spark://pc1357:7077   --deploy-mode client   --name "Spark Thrift Server"   --conf spark.app.name="Spark Thrift Server"   --conf spark.sql.hive.thriftServer.port=10000
+```
+Check SparkThrift UI at http://localhost:4040
 # 5, Setup Apache Hive
 
 Init schema incase we do not have Hive metastore setup
