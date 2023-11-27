@@ -2,8 +2,8 @@ This is a demo of CDC from MySql database into Apache Iceberg table
 
 # Prerequisites
 - Java 8 installation: 
-- Kafka 3.6.0 with Scala 2.13 installation:
-- Zookeeper 3.9.1 installation:
+- Kafka 3.6.0 with Scala 2.13 installation: https://downloads.apache.org/kafka/3.6.0/kafka_2.13-3.6.0.tgz
+- Zookeeper 3.9.1 installation: https://dlcdn.apache.org/zookeeper/zookeeper-3.9.1/apache-zookeeper-3.9.1-bin.tar.gz
 - Hadoop 3.3.6 installation: https://dlcdn.apache.org/hadoop/common/hadoop-3.3.6/hadoop-3.3.6.tar.gz 
 - Hive 4.0.0 beta 1 installation: https://dlcdn.apache.org/hive/hive-4.0.0-beta-1/apache-hive-4.0.0-beta-1-bin.tar.gz
 - Spark 3.5.0 with Scala 2.13 installation: https://dlcdn.apache.org/spark/spark-3.5.0/spark-3.5.0-bin-hadoop3-scala2.13.tgz
@@ -25,9 +25,21 @@ install some dependencies for ubuntu
 sudo apt-get install ssh pdsh
 ```
 
+generate ssh key for RPC
+```
+ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa
+cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+chmod 0600 ~/.ssh/authorized_keys
+```
+
 Copy all configuration files to $HADOOP_HOME/etc/hadoop
 ```
 cp ./config/hadoop/* $HADOOP_HOME/etc/hadoop
+```
+
+Format hdfs if first run:
+```
+$HADOOP_HOME/bin/hdfs namenode -format
 ```
 
 Start hdfs
