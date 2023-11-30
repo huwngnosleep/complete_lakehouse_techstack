@@ -9,7 +9,20 @@ services:
       - "8080:8080"
       - "7077:7077"
       - "4040:4040"
-    command: bash -c "/opt/spark/sbin/start-master.sh && tail -f"
+      - "10000:10000"
+    volumes:
+      - ./config/docker-compose/spark:/opt/spark/config/:ro
+    command: bash -c "
+      /opt/spark/sbin/start-master.sh \ && 
+      /opt/spark/sbin/start-thriftserver.sh \
+      --master spark://spark-master:7077 \
+      --deploy-mode client \
+      --num-executors 4 \
+      --executor-cores 1 \
+      --executor-memory 1G \
+      --conf spark.cores.max=4 \
+      --files /opt/spark/config/hive-site.xml
+      && tail -f"
 
   spark-worker-1:
     image: spark:latest

@@ -1,0 +1,25 @@
+<configuration>
+    <!-- Set HDFS metastore URI -->
+    <property>
+        <name>fs.defaultFS</name>
+        <value>hdfs://namenode:9000</value>
+    </property>
+    <property>
+        <name>hive.metastore.warehouse.dir</name>
+        <value>hdfs://namenode:9000/warehouse</value>
+    </property>
+
+    <!-- Set HDFS location for Hive scratch directory -->
+    <property>
+        <name>hive.exec.scratchdir</name>
+        <value>/tmp/hive</value>
+        <description>Scratch space for Hive jobs</description>
+    </property>
+
+    <!-- Set HDFS location for Hive user home directory -->
+    <property>
+        <name>hive.metastore.user.home.dir</name>
+        <value>/user/hive</value>
+        <description>Location in HDFS for user home directories</description>
+    </property>
+</configuration>

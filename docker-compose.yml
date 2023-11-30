@@ -87,6 +87,45 @@ services:
       - namenode
     command: datanode    
     
+  spark-master:
+    image: spark:latest
+    container_name: spark-master
+    hostname: spark-master
+    ports:
+      - "8080:8080"
+      - "7077:7077"
+      - "4040:4040"
+      - "10000:10000"
+    volumes:
+      - ./config/docker-compose/spark:/opt/spark/conf/:ro
+    command: bash -c "
+      /opt/spark/sbin/start-master.sh \ && 
+      /opt/spark/sbin/start-thriftserver.sh \
+      --master spark://spark-master:7077 \
+      --deploy-mode client \
+      --num-executors 4 \
+      --executor-cores 1 \
+      --executor-memory 1G \
+      --conf spark.cores.max=4 \
+      --files /opt/spark/conf/hive-site.xml
+      && tail -f"
+
+  spark-worker-1:
+    image: spark:latest
+    container_name: spark-worker-1
+    hostname: spark-worker-1
+    environment:
+      - SPARK_MASTER=spark://spark-master:7077
+    command: bash -c "/opt/spark/sbin/start-worker.sh spark://spark-master:7077 && tail -f"
+
+  spark-worker-2:
+    image: spark:latest
+    container_name: spark-worker-2
+    hostname: spark-worker-2
+    environment:
+      - SPARK_MASTER=spark://spark-master:7077
+    command: bash -c "/opt/spark/sbin/start-worker.sh spark://spark-master:7077 && tail -f"
+
 volumes:
   namenode_data:
   datanode1_data:
