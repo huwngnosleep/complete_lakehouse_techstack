@@ -8,7 +8,6 @@ services:
       - "8080:8080"
       - "7077:7077"
     volumes:
-      - ./config/hosts:/etc/hosts
       - ./config/docker-compose/spark:${SPARK_HOME}/conf/:ro
     command: bash -c "
       ${SPARK_HOME}/sbin/start-master.sh \\
@@ -22,7 +21,6 @@ services:
       - "10000:10000"
     depends_on: [spark-master]
     volumes:
-      - ./config/hosts:/etc/hosts
       - ./config/docker-compose/spark:${SPARK_HOME}/conf/:ro
     command: bash -c " 
       ${SPARK_HOME}/sbin/start-thriftserver.sh --master spark://spark-master:7077 \
@@ -40,7 +38,7 @@ services:
     environment:
       - SPARK_MASTER=spark://spark-master:7077
     volumes:
-      - ./config/hosts:/etc/hosts
+      - ./config/docker-compose/spark:${SPARK_HOME}/conf/:ro
     command: bash -c "${SPARK_HOME}/sbin/start-worker.sh spark://spark-master:7077 && tail -f"
 
   spark-worker-2:
@@ -49,7 +47,7 @@ services:
     environment:
       - SPARK_MASTER=spark://spark-master:7077
     volumes: 
-      - ./config/hosts:/etc/hosts
+      - ./config/docker-compose/spark:${SPARK_HOME}/conf/:ro
     command: bash -c "${SPARK_HOME}/sbin/start-worker.sh spark://spark-master:7077 && tail -f"
 
   
