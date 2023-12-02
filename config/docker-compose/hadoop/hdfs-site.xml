@@ -1,7 +1,8 @@
 <configuration>
     <property>
         <name>dfs.namenode.name.dir</name>
-        <value>/data1/dfs/name,/data2/dfs/name</value>
+        <value>/data1/dfs/name</value>
+        <!-- <value>/data1/dfs/name,/data2/dfs/name</value> -->
     </property>
     <property>
         <name>dfs.permissions.enabled</name>
@@ -9,7 +10,8 @@
     </property>
     <property>
         <name>dfs.datanode.data.dir</name>
-        <value>/data1/dfs/data,/data2/dfs/data</value>
+        <value>/data1/dfs/data</value>
+        <!-- <value>/data1/dfs/data,/data2/dfs/data</value> -->
     </property>
     <property>
         <name>dfs.replication</name>
