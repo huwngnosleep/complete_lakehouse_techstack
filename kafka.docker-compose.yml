@@ -14,10 +14,13 @@ services:
       - mysql_data:/var/lib/mysql
       
   zookeeper:
+    user: root
     image: docker.io/bitnami/kafka:3.6
     ports:
       - "2181:2181" 
-    container_name: zookeeper  
+    container_name: zookeeper
+    volumes:
+      - ./data/zookeeper:/tmp/zookeeper  
     environment:
       - KAFKA_HOME=${KAFKA_HOME}
     command: "${KAFKA_HOME}/bin/zookeeper-server-start.sh ${KAFKA_HOME}/config/zookeeper.properties"
@@ -29,7 +32,7 @@ services:
     container_name: kafka  
     environment:
       - KAFKA_HOME=${KAFKA_HOME}
-
+    user: root
     volumes:
       - ./data/kafka_logs:/etc/logs
       - ./config/docker-compose/kafka/server.properties:${KAFKA_HOME}/config/server.properties:ro
@@ -43,7 +46,6 @@ services:
     environment:
       - KAFKA_HOME=${KAFKA_HOME}
     volumes:
-      - ./data/kafka_logs:/etc/logs
       - ./config/docker-compose/kafka/server.properties:${KAFKA_HOME}/config/server.properties:ro
       - ./config/docker-compose/kafka/connect-standalone.properties:${KAFKA_HOME}/config/connect-standalone.properties:ro
       - ./config/docker-compose/kafka/debezium-connector-mysql:${KAFKA_HOME}/libs/debezium-connector-mysql
@@ -63,22 +65,6 @@ services:
 
 volumes:
   mysql_data:
-   
-# {
-#   "name": "inventory-connector",  
-#   "config": {  
-#     "connector.class": "io.debezium.connector.mysql.MySqlConnector",
-#     "tasks.max": "1",  
-#     "database.hostname": "mysql",  
-#     "database.port": "3306",
-#     "database.user": "root",
-#     "database.password": "root",
-#     "database.server.id": "1",  
-#     "topic.prefix": "mysql_inventory",  
-#     "database.include.list": "inventory",  
-#     "schema.history.internal.kafka.bootstrap.servers": "kafka:9092",  
-#     "schema.history.internal.kafka.topic": "schema-changes.inventory"  
-#   }
-# }
+  broker:
 
 # curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" localhost:8083/connectors/ -d '{ "name": "mysql-inventory-connector", "config": { "connector.class": "io.debezium.connector.mysql.MySqlConnector", "tasks.max": "1", "database.hostname": "mysql", "database.port": "3306", "database.user": "root", "database.password": "root", "database.server.id": "1", "topic.prefix": "mysql_inventory", "database.include.list": "inventory", "schema.history.internal.kafka.bootstrap.servers": "kafka:9092", "schema.history.internal.kafka.topic": "schemahistory.inventory" } }'
