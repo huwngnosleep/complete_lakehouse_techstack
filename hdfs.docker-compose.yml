@@ -75,6 +75,66 @@ services:
       - namenode
     command: datanode    
 
+  datanode6:
+    image: gchq/hdfs:latest
+    container_name: datanode6
+    environment:
+      - CLUSTER_NAME=hadoop
+    volumes:
+      - ./data/datanode6:/data1
+      - ./config/docker-compose/hadoop:/opt/hadoop/etc/hadoop:ro
+    depends_on:
+      - namenode
+    command: datanode
+
+  datanode7:
+    image: gchq/hdfs:latest
+    container_name: datanode7
+    environment:
+      - CLUSTER_NAME=hadoop
+    volumes:
+      - ./data/datanode7:/data1
+      - ./config/docker-compose/hadoop:/opt/hadoop/etc/hadoop:ro
+    depends_on:
+      - namenode
+    command: datanode  
+
+  datanode8:
+    image: gchq/hdfs:latest
+    container_name: datanode8
+    environment:
+      - CLUSTER_NAME=hadoop
+    volumes:
+      - ./data/datanode8:/data1
+      - ./config/docker-compose/hadoop:/opt/hadoop/etc/hadoop:ro
+    depends_on:
+      - namenode
+    command: datanode   
+
+  datanode9:
+    image: gchq/hdfs:latest
+    container_name: datanode9
+    environment:
+      - CLUSTER_NAME=hadoop
+    volumes:
+      - ./data/datanode9:/data1
+      - ./config/docker-compose/hadoop:/opt/hadoop/etc/hadoop:ro
+    depends_on:
+      - namenode
+    command: datanode   
+
+  datanode10:
+    image: gchq/hdfs:latest
+    container_name: datanode10
+    environment:
+      - CLUSTER_NAME=hadoop
+    volumes:
+      - ./data/datanode10:/data1
+      - ./config/docker-compose/hadoop:/opt/hadoop/etc/hadoop:ro
+    depends_on:
+      - namenode
+    command: datanode
+
 volumes:
   namenode_data:
   datanode1_data:

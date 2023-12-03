@@ -2,23 +2,24 @@ version: "3.7"
 
 
 services:
+  mysql:
+    image: mysql:latest
+    command: --default-authentication-plugin=mysql_native_password
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - 3306:3306
+    volumes:
+      - mysql_data:/var/lib/mysql
+      
   zookeeper:
     image: docker.io/bitnami/kafka:3.6
     ports:
-      - "2181:2181"
+      - "2181:2181" 
     container_name: zookeeper  
     environment:
       - KAFKA_HOME=${KAFKA_HOME}
-    #   # KRaft settings
-    #   - KAFKA_CFG_NODE_ID=0
-    #   - KAFKA_CFG_PROCESS_ROLES=controller,broker
-    #   - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka:9093
-    #   # Listeners
-    #   - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
-    #   - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://:9092
-    #   - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
-    #   - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
-    #   - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
     command: "${KAFKA_HOME}/bin/zookeeper-server-start.sh ${KAFKA_HOME}/config/zookeeper.properties"
 
   kafka:
@@ -28,11 +29,25 @@ services:
     container_name: kafka  
     environment:
       - KAFKA_HOME=${KAFKA_HOME}
-      - ZOOKEEPER_HOST=${ZOOKEEPER_HOST}
+
     volumes:
       - ./data/kafka_logs:/etc/logs
       - ./config/docker-compose/kafka/server.properties:${KAFKA_HOME}/config/server.properties:ro
     command: ${KAFKA_HOME}/bin/kafka-server-start.sh ${KAFKA_HOME}/config/server.properties
+
+  kafka-connect:
+    image: docker.io/bitnami/kafka:3.6
+    ports:
+      - "8083:8083"
+    container_name: kafka-connect
+    environment:
+      - KAFKA_HOME=${KAFKA_HOME}
+    volumes:
+      - ./data/kafka_logs:/etc/logs
+      - ./config/docker-compose/kafka/server.properties:${KAFKA_HOME}/config/server.properties:ro
+      - ./config/docker-compose/kafka/connect-standalone.properties:${KAFKA_HOME}/config/connect-standalone.properties:ro
+      - ./config/docker-compose/kafka/debezium-connector-mysql:${KAFKA_HOME}/libs/debezium-connector-mysql
+    command: "${KAFKA_HOME}/bin/connect-standalone.sh ${KAFKA_HOME}/config/connect-standalone.properties"
 
   # kafka-ui:
   #   container_name: kafka-ui
@@ -45,3 +60,25 @@ services:
   #     - KAFKA_HOST=${KAFKA_HOST}
   #   volumes:
   #     - ./kui/config.yml:/config.yml:ro
+
+volumes:
+  mysql_data:
+   
+# {
+#   "name": "inventory-connector",  
+#   "config": {  
+#     "connector.class": "io.debezium.connector.mysql.MySqlConnector",
+#     "tasks.max": "1",  
+#     "database.hostname": "mysql",  
+#     "database.port": "3306",
+#     "database.user": "root",
+#     "database.password": "root",
+#     "database.server.id": "1",  
+#     "topic.prefix": "mysql_inventory",  
+#     "database.include.list": "inventory",  
+#     "schema.history.internal.kafka.bootstrap.servers": "kafka:9092",  
+#     "schema.history.internal.kafka.topic": "schema-changes.inventory"  
+#   }
+# }
+
+# curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" localhost:8083/connectors/ -d '{ "name": "mysql-inventory-connector", "config": { "connector.class": "io.debezium.connector.mysql.MySqlConnector", "tasks.max": "1", "database.hostname": "mysql", "database.port": "3306", "database.user": "root", "database.password": "root", "database.server.id": "1", "topic.prefix": "mysql_inventory", "database.include.list": "inventory", "schema.history.internal.kafka.bootstrap.servers": "kafka:9092", "schema.history.internal.kafka.topic": "schemahistory.inventory" } }'
