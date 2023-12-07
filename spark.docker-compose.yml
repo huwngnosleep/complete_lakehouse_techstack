@@ -9,6 +9,8 @@ services:
       - "7077:7077"
     volumes:
       - ./config/docker-compose/spark:${SPARK_HOME}/conf/:ro
+      - ./code:${SPARK_HOME}/code:ro
+      - spark_home:/home/spark
     command: bash -c "
       ${SPARK_HOME}/sbin/start-master.sh \\
       && tail -f"
@@ -24,11 +26,10 @@ services:
       - ./config/docker-compose/spark:${SPARK_HOME}/conf/:ro
     command: bash -c " 
       ${SPARK_HOME}/sbin/start-thriftserver.sh --master spark://spark-master:7077 \
-      --deploy-mode client \
-      --num-executors 16 \
-      --executor-cores 1 \
-      --executor-memory 1G \
-      --conf spark.cores.max=16 \
+      --deploy-mode cluster \
+      --num-executors 2 \
+      --executor-cores 4 \
+      --executor-memory 4G \
       --files ${SPARK_HOME}/conf/hive-site.xml
       && tail -f"
 
@@ -39,7 +40,7 @@ services:
       - SPARK_MASTER=spark://spark-master:7077
     volumes:
       - ./config/docker-compose/spark:${SPARK_HOME}/conf/:ro
-    command: bash -c "${SPARK_HOME}/sbin/start-worker.sh spark://spark-master:7077 && tail -f"
+    command: bash -c "${SPARK_HOME}/sbin/start-worker.sh -m ${SPARK_WORKER_MEM} -c ${SPARK_WORKER_CORES} spark://spark-master:7077 && tail -f"
 
   spark-worker-2:
     image: spark:latest
@@ -48,6 +49,8 @@ services:
       - SPARK_MASTER=spark://spark-master:7077
     volumes: 
       - ./config/docker-compose/spark:${SPARK_HOME}/conf/:ro
-    command: bash -c "${SPARK_HOME}/sbin/start-worker.sh spark://spark-master:7077 && tail -f"
+    command: bash -c "${SPARK_HOME}/sbin/start-worker.sh -m ${SPARK_WORKER_MEM} -c ${SPARK_WORKER_CORES} spark://spark-master:7077 && tail -f"
 
   
+volumes:
+  spark_home:

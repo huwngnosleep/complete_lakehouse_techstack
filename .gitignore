@@ -2,3 +2,4 @@ metastore_db
 derby.log
 confog/hosts
 data
+ip.txt
