@@ -24,3 +24,13 @@ df = spark \
     .option("kafka.bootstrap.servers", "172.21.0.15:9092") \
     .option("subscribe", kafka_topic) \
     .load()
+    
+df.selectExpr("CAST(value AS STRING)")
+
+query = (
+    df.writeStream.outputMode("append")
+    .format("console")
+    .start()
+)
+
+query.awaitTermination()
