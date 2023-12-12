@@ -46,6 +46,7 @@ services:
       spark-master:
         condition: service_healthy
     volumes:
+      - ./.env:${SPARK_HOME}/.env:ro
       - ./scripts/start_sparkthrift.sh:${SPARK_HOME}/start_sparkthrift.sh
       - ./config/spark/spark-thriftserver.properties:${SPARK_HOME}/conf/spark-thriftserver.properties:ro
     entrypoint: ${SPARK_HOME}/start_sparkthrift.sh
