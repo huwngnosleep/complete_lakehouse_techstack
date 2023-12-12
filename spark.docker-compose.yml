@@ -6,7 +6,7 @@ services:
   #   image: spark:latest
   #   container_name: spark-apps
   #   volumes:
-  #     - ./config/docker-compose/spark:${SPARK_HOME}/conf/:ro
+  #     - ./config/spark:${SPARK_HOME}/conf/:ro
   #     - ./code:${SPARK_HOME}/code:ro
   #     - spark_home:/home/spark:rw
   #   command: "${SPARK_HOME}/bin/spark-submit 
@@ -23,17 +23,34 @@ services:
     ports:
       - "${SPARK_MASTER_WEB_UI_PORT}:${SPARK_MASTER_WEB_UI_PORT}"
       - "${SPARK_MASTER_PORT}:${SPARK_MASTER_PORT}"
-      - "4040:4040"
+      
     volumes:
       - ./code:${SPARK_HOME}/code:ro
-      - ./config/docker-compose/spark/spark-thriftserver.properties:${SPARK_HOME}/conf/spark-thriftserver.properties:ro
-      - ./start_spark.sh:${SPARK_HOME}/start_spark.sh
+      - ./config/spark/spark-thriftserver.properties:${SPARK_HOME}/conf/spark-thriftserver.properties:ro
+      # - ./scripts/start_sparkmaster.sh:${SPARK_HOME}/start_sparkmaster.sh
     healthcheck:
       test: ["CMD", "curl", "-s", "http://localhost:${SPARK_MASTER_WEB_UI_PORT}/"]
       interval: 1s
       timeout: 10s
       retries: 5
-    entrypoint: ${SPARK_HOME}/start_spark.sh
+    command: bash -c "
+      ${SPARK_HOME}/sbin/start-master.sh \
+      && tail -f"
+    
+  spark-thriftserver:
+    image: spark:latest
+    container_name: spark-thriftserver
+    ports:
+      - "${SPARK_THRIFT_WEB_UI_PORT}:${SPARK_THRIFT_WEB_UI_PORT}"
+      - "${SPARK_THRIFT_TCP_PORT}:${SPARK_THRIFT_TCP_PORT}"
+    depends_on:
+      - spark-master:healthy
+    volumes:
+      # - ./config/docker-compose/spark:${SPARK_HOME}/conf/:ro
+      - ./scripts/start_sparkthrift.sh:${SPARK_HOME}/start_sparkthrift.sh
+      - ./config/spark/spark-thriftserver.properties:${SPARK_HOME}/conf/spark-thriftserver.properties:ro
+    entrypoint: ${SPARK_HOME}/start_sparkthrift.sh
+
   spark-worker-1:
     image: spark:latest
     container_name: spark-worker-1
@@ -42,8 +59,6 @@ services:
         condition: service_healthy
     environment:
       - SPARK_MASTER=spark://spark-master:${SPARK_MASTER_PORT}
-    # volumes:
-      # - ./config/docker-compose/spark:${SPARK_HOME}/conf/:ro
     command: bash -c "${SPARK_HOME}/sbin/start-worker.sh -m ${SPARK_WORKER_MEM} -c ${SPARK_WORKER_CORES} spark://spark-master:${SPARK_MASTER_PORT} && tail -f"
 
   spark-worker-2:
@@ -55,7 +70,7 @@ services:
     environment:
       - SPARK_MASTER=spark://spark-master:${SPARK_MASTER_PORT}
     # volumes: 
-      # - ./config/docker-compose/spark:${SPARK_HOME}/conf/:ro
+      # - ./config/spark:${SPARK_HOME}/conf/:ro
     command: bash -c "${SPARK_HOME}/sbin/start-worker.sh -m ${SPARK_WORKER_MEM} -c ${SPARK_WORKER_CORES} spark://spark-master:${SPARK_MASTER_PORT} && tail -f"
 
   

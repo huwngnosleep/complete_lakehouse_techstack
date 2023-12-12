@@ -37,7 +37,7 @@ services:
     user: root
     volumes:
       - ./data/kafka_logs:/etc/logs
-      - ./config/docker-compose/kafka/server.properties:${KAFKA_HOME}/config/server.properties:ro
+      - ./config/kafka/server.properties:${KAFKA_HOME}/config/server.properties:ro
     command: ${KAFKA_HOME}/bin/kafka-server-start.sh ${KAFKA_HOME}/config/server.properties
 
   kafka-connect:
@@ -50,10 +50,10 @@ services:
     environment:
       - KAFKA_HOME=${KAFKA_HOME}
     volumes:
-      - ./config/docker-compose/kafka/inventory-mysql-kafka-connect.properties:${KAFKA_HOME}/config/inventory-mysql-kafka-connect.properties:ro
-      - ./config/docker-compose/kafka/server.properties:${KAFKA_HOME}/config/server.properties:ro
-      - ./config/docker-compose/kafka/connect-standalone.properties:${KAFKA_HOME}/config/connect-standalone.properties:ro
-      - ./config/docker-compose/kafka/debezium-connector-mysql:${KAFKA_HOME}/libs/debezium-connector-mysql
+      - ./config/kafka/inventory-mysql-kafka-connect.properties:${KAFKA_HOME}/config/inventory-mysql-kafka-connect.properties:ro
+      - ./config/kafka/server.properties:${KAFKA_HOME}/config/server.properties:ro
+      - ./config/kafka/connect-standalone.properties:${KAFKA_HOME}/config/connect-standalone.properties:ro
+      - ./config/kafka/debezium-connector-mysql:${KAFKA_HOME}/libs/debezium-connector-mysql
     command: "${KAFKA_HOME}/bin/connect-standalone.sh ${KAFKA_HOME}/config/connect-standalone.properties ${KAFKA_HOME}/config/inventory-mysql-kafka-connect.properties"
 
   # kafka-ui:

@@ -12,7 +12,7 @@ services:
       - "9000:9000"
     volumes:
       - ./data/namenode:/data1
-      - ./config/docker-compose/hadoop:/opt/hadoop/etc/hadoop:ro
+      - ./config/hadoop:/opt/hadoop/etc/hadoop:ro
     command: namenode
 
   datanode1:
@@ -22,7 +22,7 @@ services:
       - CLUSTER_NAME=hadoop
     volumes:
       - ./data/datanode1:/data1
-      - ./config/docker-compose/hadoop:/opt/hadoop/etc/hadoop:ro
+      - ./config/hadoop:/opt/hadoop/etc/hadoop:ro
     depends_on:
       - namenode
     command: datanode
@@ -34,7 +34,7 @@ services:
       - CLUSTER_NAME=hadoop
     volumes:
       - ./data/datanode2:/data1
-      - ./config/docker-compose/hadoop:/opt/hadoop/etc/hadoop:ro
+      - ./config/hadoop:/opt/hadoop/etc/hadoop:ro
     depends_on:
       - namenode
     command: datanode  
@@ -46,7 +46,7 @@ services:
       - CLUSTER_NAME=hadoop
     volumes:
       - ./data/datanode3:/data1
-      - ./config/docker-compose/hadoop:/opt/hadoop/etc/hadoop:ro
+      - ./config/hadoop:/opt/hadoop/etc/hadoop:ro
     depends_on:
       - namenode
     command: datanode   
@@ -58,7 +58,7 @@ services:
       - CLUSTER_NAME=hadoop
     volumes:
       - ./data/datanode4:/data1
-      - ./config/docker-compose/hadoop:/opt/hadoop/etc/hadoop:ro
+      - ./config/hadoop:/opt/hadoop/etc/hadoop:ro
     depends_on:
       - namenode
     command: datanode   
@@ -70,7 +70,7 @@ services:
       - CLUSTER_NAME=hadoop
     volumes:
       - ./data/datanode5:/data1
-      - ./config/docker-compose/hadoop:/opt/hadoop/etc/hadoop:ro
+      - ./config/hadoop:/opt/hadoop/etc/hadoop:ro
     depends_on:
       - namenode
     command: datanode    
@@ -82,7 +82,7 @@ services:
       - CLUSTER_NAME=hadoop
     volumes:
       - ./data/datanode6:/data1
-      - ./config/docker-compose/hadoop:/opt/hadoop/etc/hadoop:ro
+      - ./config/hadoop:/opt/hadoop/etc/hadoop:ro
     depends_on:
       - namenode
     command: datanode
@@ -94,7 +94,7 @@ services:
       - CLUSTER_NAME=hadoop
     volumes:
       - ./data/datanode7:/data1
-      - ./config/docker-compose/hadoop:/opt/hadoop/etc/hadoop:ro
+      - ./config/hadoop:/opt/hadoop/etc/hadoop:ro
     depends_on:
       - namenode
     command: datanode  
@@ -106,7 +106,7 @@ services:
       - CLUSTER_NAME=hadoop
     volumes:
       - ./data/datanode8:/data1
-      - ./config/docker-compose/hadoop:/opt/hadoop/etc/hadoop:ro
+      - ./config/hadoop:/opt/hadoop/etc/hadoop:ro
     depends_on:
       - namenode
     command: datanode   
@@ -118,7 +118,7 @@ services:
       - CLUSTER_NAME=hadoop
     volumes:
       - ./data/datanode9:/data1
-      - ./config/docker-compose/hadoop:/opt/hadoop/etc/hadoop:ro
+      - ./config/hadoop:/opt/hadoop/etc/hadoop:ro
     depends_on:
       - namenode
     command: datanode   
@@ -130,7 +130,7 @@ services:
       - CLUSTER_NAME=hadoop
     volumes:
       - ./data/datanode10:/data1
-      - ./config/docker-compose/hadoop:/opt/hadoop/etc/hadoop:ro
+      - ./config/hadoop:/opt/hadoop/etc/hadoop:ro
     depends_on:
       - namenode
     command: datanode

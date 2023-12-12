@@ -11,19 +11,17 @@ check_curl_success() {
     fi
 }
 
-bash $SPARK_HOME/sbin/start-master.sh
-
 while true; do
     # Make a request to localhost:8080
-    if check_curl_success "http://localhost:8080"; then
+    if check_curl_success "http://spark-master:8080"; then
         echo "Curl request to localhost:8080 was successful!"
         # Replace the following line with your actual command
         bash $SPARK_HOME/sbin/start-thriftserver.sh --master spark://spark-master:7077 --properties-file $SPARK_HOME/conf/spark-thriftserver.properties
-        break
+        # break
     else
         echo "Curl request to localhost:8080 failed! Retrying..."
     fi
 
     # Add a delay between retries to avoid excessive requests
-    sleep 60
+    sleep 30
 done

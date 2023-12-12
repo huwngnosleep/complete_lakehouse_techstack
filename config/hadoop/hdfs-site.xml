@@ -1,6 +1,32 @@
 <configuration>
     <property>
+        <name>dfs.namenode.name.dir</name>
+        <value>/data1/dfs/name</value>
+        <!-- <value>/data1/dfs/name,/data2/dfs/name</value> -->
+    </property>
+    <property>
+        <name>dfs.permissions.enabled</name>
+        <value>false</value>
+    </property>
+    <property>
+        <name>dfs.datanode.data.dir</name>
+        <value>/data1/dfs/data</value>
+        <!-- <value>/data1/dfs/data,/data2/dfs/data</value> -->
+    </property>
+    <property>
         <name>dfs.replication</name>
-        <value>1</value>
+        <value>2</value>
+    </property>
+    <property>
+        <name>dfs.namenode.http-address</name>
+        <value>namenode:9870</value>
+    </property>
+    <property>
+        <name>dfs.namenode.replication.min</name>
+        <value>1</value> 
+    </property>
+    <property>
+        <name>dfs.namenode.replication.max</name>
+        <value>5</value> 
     </property>
 </configuration>
