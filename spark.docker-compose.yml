@@ -27,7 +27,6 @@ services:
     volumes:
       - ./code:${SPARK_HOME}/code:ro
       - ./config/spark/spark-thriftserver.properties:${SPARK_HOME}/conf/spark-thriftserver.properties:ro
-      # - ./scripts/start_sparkmaster.sh:${SPARK_HOME}/start_sparkmaster.sh
     healthcheck:
       test: ["CMD", "curl", "-s", "http://localhost:${SPARK_MASTER_WEB_UI_PORT}/"]
       interval: 1s
@@ -44,9 +43,9 @@ services:
       - "${SPARK_THRIFT_WEB_UI_PORT}:${SPARK_THRIFT_WEB_UI_PORT}"
       - "${SPARK_THRIFT_TCP_PORT}:${SPARK_THRIFT_TCP_PORT}"
     depends_on:
-      - spark-master:healthy
+      spark-master:
+        condition: service_healthy
     volumes:
-      # - ./config/docker-compose/spark:${SPARK_HOME}/conf/:ro
       - ./scripts/start_sparkthrift.sh:${SPARK_HOME}/start_sparkthrift.sh
       - ./config/spark/spark-thriftserver.properties:${SPARK_HOME}/conf/spark-thriftserver.properties:ro
     entrypoint: ${SPARK_HOME}/start_sparkthrift.sh
