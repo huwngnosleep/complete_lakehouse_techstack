@@ -1,0 +1,76 @@
+version: "3.8"
+
+services:
+  clickhouse-keeper:
+    image: 'clickhouse/clickhouse-keeper:23.11.1.2711-alpine'
+    user: '101:101'
+    container_name: clickhouse-keeper
+    hostname: clickhouse-keeper
+    volumes:
+      - ./config/clickhouse/keeper_config.xml:/etc/clickhouse-keeper/keeper_config.xml
+      - clickhouse_keeper:/var/lib/clickhouse/
+      - clickhouse_keeper_log:/var/log/clickhouse-keeper
+    ports:
+      - '127.0.0.1:9181:9181'
+
+  clickhouse1:
+    container_name: clickhouse1
+    image: clickhouse/clickhouse-server:23.11.1.2711
+    depends_on:
+      - clickhouse-keeper
+    environment:
+      - SHARD=1
+      - HOSTNAME=clickhouse1
+    ports:
+      - "8123:8123"
+      - "9009:9000"
+    volumes:
+      - ./config/clickhouse/config.xml:/etc/clickhouse-server/config.xml
+      - clickhouse1_data:/var/lib/clickhouse/
+    networks:
+      clickhouse_cluster:
+        ipv4_address: 172.23.0.11
+
+  clickhouse2:
+    image: clickhouse/clickhouse-server:23.11.1.2711
+    container_name: clickhouse2
+    depends_on:
+      - clickhouse-keeper
+    volumes:
+      - ./config/clickhouse/config.xml:/etc/clickhouse-server/config.xml
+      - clickhouse2_data:/var/lib/clickhouse/
+    environment:
+      - SHARD=2
+      - HOSTNAME=clickhouse2
+    networks:
+      clickhouse_cluster:
+        ipv4_address: 172.23.0.12
+
+  clickhouse3:
+    image: clickhouse/clickhouse-server:23.11.1.2711
+    container_name: clickhouse3
+    depends_on:
+      - clickhouse-keeper
+    volumes:
+      - ./config/clickhouse/config.xml:/etc/clickhouse-server/config.xml
+      - clickhouse3_data:/var/lib/clickhouse/
+    environment:
+      - SHARD=3
+      - HOSTNAME=clickhouse3
+    networks:
+      clickhouse_cluster:
+        ipv4_address: 172.23.0.13
+
+networks:
+  clickhouse_cluster:
+    name: clickhouse_cluster
+    ipam:
+      config:
+        - subnet: 172.23.0.0/24
+
+volumes:
+  clickhouse1_data:
+  clickhouse2_data:
+  clickhouse3_data:
+  clickhouse_keeper:
+  clickhouse_keeper_log:
