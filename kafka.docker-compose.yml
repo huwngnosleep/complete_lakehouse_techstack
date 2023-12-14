@@ -6,6 +6,7 @@ services:
     image: mysql:latest
     command: --default-authentication-plugin=mysql_native_password
     container_name: mysql
+    hostname: mysql
     environment:
       MYSQL_ROOT_PASSWORD: root
     ports:
@@ -19,6 +20,7 @@ services:
     ports:
       - "2181:2181" 
     container_name: zookeeper
+    hostname: zookeeper
     volumes:
       - ./data/zookeeper:/tmp/zookeeper  
     environment:
@@ -28,8 +30,7 @@ services:
   kafka:
     image: docker.io/bitnami/kafka:3.6
     container_name: kafka  
-    depends_on:
-      - zookeeper
+    hostname: kafka
     ports:
       - "9092:9092"
     environment:
@@ -44,6 +45,7 @@ services:
     image: docker.io/bitnami/kafka:3.6
     ports:
       - "8083:8083"
+    hostname: kafka-connect
     container_name: kafka-connect
     depends_on:
       - kafka
@@ -71,5 +73,3 @@ services:
 volumes:
   mysql_data:
   broker:
-
-# curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" localhost:8083/connectors/ -d '{ "name": "mysql-inventory-connector", "config": { "connector.class": "io.debezium.connector.mysql.MySqlConnector", "tasks.max": "1", "database.hostname": "mysql", "database.port": "3306", "database.user": "root", "database.password": "root", "database.server.id": "1", "topic.prefix": "mysql_inventory", "database.include.list": "inventory", "schema.history.internal.kafka.bootstrap.servers": "kafka:9092", "schema.history.internal.kafka.topic": "schemahistory.inventory" } }'

@@ -1,22 +1,25 @@
 version: '3.7'
 
 services:
-  # spark-apps:
-  #   user: root
-  #   image: spark:latest
-  #   container_name: spark-apps
-  #   volumes:
-  #     - ./config/spark:${SPARK_HOME}/conf/:ro
-  #     - ./code:${SPARK_HOME}/code:ro
-  #     - spark_home:/home/spark:rw
-  #   command: "${SPARK_HOME}/bin/spark-submit 
-  #     --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0 \ 
-  #     --master spark://spark-master:${SPARK_MASTER_PORT} \
-  #     --executor-cores 4 \
-  #     --executor-memory 8G \
-  #     ${SPARK_HOME}/code/process.py"
+  spark-apps:
+    user: root
+    image: spark:latest
+    container_name: spark-apps
+    volumes:
+      - ./config/spark:${SPARK_HOME}/conf/:ro
+      - ./code:${SPARK_HOME}/code:ro
+      - spark_home:/home/spark:rw
+    command: "${SPARK_HOME}/bin/spark-submit 
+      --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0 \ 
+      --master spark://spark-master:${SPARK_MASTER_PORT} \
+      --executor-cores 4 \
+      --executor-memory 8G \
+      ${SPARK_HOME}/code/process.py"
+
+# $SPARK_HOME/bin/spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0 --master spark://spark-master:7077 $SPARK_HOME/code/process.py
 
   spark-master:
+    # root user to avoid permission deny in $SPARK_HOME, need improving later
     user: root
     image: spark:latest
     container_name: spark-master
