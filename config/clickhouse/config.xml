@@ -2,7 +2,7 @@
     <http_port>8123</http_port>
     <tcp_port>9000</tcp_port>
     <listen_host>::</listen_host>
-    <!-- <interserver_http_host>172.23.0.10</interserver_http_host> -->
+    <!-- <interserver_http_host>::</interserver_http_host> -->
     <interserver_http_port>9009</interserver_http_port>
     
     <remote_servers>
@@ -30,7 +30,15 @@
 
     <zookeeper>
         <node>
-            <host>clickhouse-keeper</host>
+            <host>clickhouse-keeper-1</host>
+            <port>9181</port>
+        </node>
+        <node>
+            <host>clickhouse-keeper-2</host>
+            <port>9181</port>
+        </node>
+        <node>
+            <host>clickhouse-keeper-3</host>
             <port>9181</port>
         </node>
     </zookeeper>
