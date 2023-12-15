@@ -40,8 +40,6 @@ services:
   clickhouse1:
     container_name: clickhouse1
     image: clickhouse/clickhouse-server:23.11.1.2711
-    depends_on:
-      - clickhouse-keeper
     environment:
       - SHARD=1
       - HOSTNAME=clickhouse1
@@ -58,8 +56,6 @@ services:
   clickhouse2:
     image: clickhouse/clickhouse-server:23.11.1.2711
     container_name: clickhouse2
-    depends_on:
-      - clickhouse-keeper
     volumes:
       - ./config/clickhouse/config.xml:/etc/clickhouse-server/config.xml
       - clickhouse2_data:/var/lib/clickhouse/
@@ -73,8 +69,6 @@ services:
   clickhouse3:
     image: clickhouse/clickhouse-server:23.11.1.2711
     container_name: clickhouse3
-    depends_on:
-      - clickhouse-keeper
     volumes:
       - ./config/clickhouse/config.xml:/etc/clickhouse-server/config.xml
       - clickhouse3_data:/var/lib/clickhouse/
