@@ -28,7 +28,7 @@
         </bi_platform>
     </remote_servers>
 
-    <zookeeper>
+    <!-- <zookeeper>
         <node>
             <host>clickhouse-keeper-1</host>
             <port>9181</port>
@@ -40,6 +40,13 @@
         <node>
             <host>clickhouse-keeper-3</host>
             <port>9181</port>
+        </node>
+    </zookeeper> -->
+
+    <zookeeper>
+        <node index="1">
+            <host>zookeeper</host>
+            <port>2181</port>
         </node>
     </zookeeper>
 

@@ -1,0 +1,52 @@
+version: "3.8"
+
+services:
+  zookeeper:
+    image: zookeeper:3.8.3
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+
+  clickhouse1:
+    container_name: clickhouse1
+    image: clickhouse/clickhouse-server:23.11.1.2711
+    environment:
+      - SHARD=1
+      - HOSTNAME=clickhouse1
+    ports:
+      - "8123:8123"
+      - "9009:9000"
+    volumes:
+      - ./config/clickhouse/config.xml:/etc/clickhouse-server/config.xml
+      - clickhouse1_data:/var/lib/clickhouse/
+
+  clickhouse2:
+    image: clickhouse/clickhouse-server:23.11.1.2711
+    container_name: clickhouse2
+    volumes:
+      - ./config/clickhouse/config.xml:/etc/clickhouse-server/config.xml
+      - clickhouse2_data:/var/lib/clickhouse/
+    environment:
+      - SHARD=2
+      - HOSTNAME=clickhouse2
+
+  clickhouse3:
+    image: clickhouse/clickhouse-server:23.11.1.2711
+    container_name: clickhouse3
+    volumes:
+      - ./config/clickhouse/config.xml:/etc/clickhouse-server/config.xml
+      - clickhouse3_data:/var/lib/clickhouse/
+    environment:
+      - SHARD=3
+      - HOSTNAME=clickhouse3
+
+volumes:
+  clickhouse1_data:
+  clickhouse2_data:
+  clickhouse3_data:
+  clickhouse-keeper-1:
+  clickhouse-keeper-log-1:
+  clickhouse-keeper-2:
+  clickhouse-keeper-log-2:
+  clickhouse-keeper-3:
+  clickhouse-keeper-log-3:
