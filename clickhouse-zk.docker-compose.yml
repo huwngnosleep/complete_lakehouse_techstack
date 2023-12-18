@@ -17,14 +17,14 @@ services:
       - "8123:8123"
       - "9009:9000"
     volumes:
-      - ./config/clickhouse/config.xml:/etc/clickhouse-server/config.xml
+      - ./config/clickhouse/ch_with_zk_config.xml:/etc/clickhouse-server/config.xml
       - clickhouse1_data:/var/lib/clickhouse/
 
   clickhouse2:
     image: clickhouse/clickhouse-server:23.11.1.2711
     container_name: clickhouse2
     volumes:
-      - ./config/clickhouse/config.xml:/etc/clickhouse-server/config.xml
+      - ./config/clickhouse/ch_with_zk_config.xml:/etc/clickhouse-server/config.xml
       - clickhouse2_data:/var/lib/clickhouse/
     environment:
       - SHARD=2
@@ -34,7 +34,7 @@ services:
     image: clickhouse/clickhouse-server:23.11.1.2711
     container_name: clickhouse3
     volumes:
-      - ./config/clickhouse/config.xml:/etc/clickhouse-server/config.xml
+      - ./config/clickhouse/ch_with_zk_config.xml:/etc/clickhouse-server/config.xml
       - clickhouse3_data:/var/lib/clickhouse/
     environment:
       - SHARD=3
