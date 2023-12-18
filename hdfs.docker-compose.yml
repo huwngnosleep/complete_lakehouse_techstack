@@ -13,6 +13,7 @@ services:
     volumes:
       - ./data/namenode:/data1
       - ./config/hadoop:/opt/hadoop/etc/hadoop:ro
+      - ./sample_data/:/opt/sample_data/
     command: namenode
 
   datanode1:
