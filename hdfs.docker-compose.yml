@@ -1,140 +1,69 @@
 version: "3.7"
 
+x-hdfs-common:
+  &hdfs-common
+  image: gchq/hdfs:latest
+  environment:
+    &hdfs-common-env
+    - CLUSTER_NAME=hadoop
+  volumes:
+    &hdfs-common-volume
+    - ./config/hadoop:/opt/hadoop/etc/hadoop:ro
+
+x-datanode-common:
+  &datanode-common
+  <<: *hdfs-common
+  depends_on:
+      - namenode
+  command: datanode
 
 services:
   namenode:
-    image: gchq/hdfs:latest
+    <<: *hdfs-common
     container_name: namenode
-    environment:
-      - CLUSTER_NAME=hadoop
     ports:
       - "9870:9870"
       - "9000:9000"
     volumes:
-      - ./data/namenode:/data1
       - ./config/hadoop:/opt/hadoop/etc/hadoop:ro
+      - ./data/namenode:/data1
       - ./sample_data/:/opt/sample_data/
     command: namenode
 
   datanode1:
-    image: gchq/hdfs:latest
+    <<: *datanode-common
     container_name: datanode1
-    environment:
-      - CLUSTER_NAME=hadoop
     volumes:
       - ./data/datanode1:/data1
       - ./config/hadoop:/opt/hadoop/etc/hadoop:ro
-    depends_on:
-      - namenode
-    command: datanode
 
   datanode2:
-    image: gchq/hdfs:latest
+    <<: *datanode-common
     container_name: datanode2
-    environment:
-      - CLUSTER_NAME=hadoop
     volumes:
       - ./data/datanode2:/data1
       - ./config/hadoop:/opt/hadoop/etc/hadoop:ro
-    depends_on:
-      - namenode
-    command: datanode  
-
+      
   datanode3:
-    image: gchq/hdfs:latest
+    <<: *datanode-common
     container_name: datanode3
-    environment:
-      - CLUSTER_NAME=hadoop
     volumes:
       - ./data/datanode3:/data1
       - ./config/hadoop:/opt/hadoop/etc/hadoop:ro
-    depends_on:
-      - namenode
-    command: datanode   
 
   datanode4:
-    image: gchq/hdfs:latest
+    <<: *datanode-common
     container_name: datanode4
-    environment:
-      - CLUSTER_NAME=hadoop
     volumes:
       - ./data/datanode4:/data1
       - ./config/hadoop:/opt/hadoop/etc/hadoop:ro
-    depends_on:
-      - namenode
-    command: datanode   
 
   datanode5:
-    image: gchq/hdfs:latest
+    <<: *datanode-common
     container_name: datanode5
-    environment:
-      - CLUSTER_NAME=hadoop
     volumes:
       - ./data/datanode5:/data1
       - ./config/hadoop:/opt/hadoop/etc/hadoop:ro
-    depends_on:
-      - namenode
-    command: datanode    
-
-  datanode6:
-    image: gchq/hdfs:latest
-    container_name: datanode6
-    environment:
-      - CLUSTER_NAME=hadoop
-    volumes:
-      - ./data/datanode6:/data1
-      - ./config/hadoop:/opt/hadoop/etc/hadoop:ro
-    depends_on:
-      - namenode
-    command: datanode
-
-  datanode7:
-    image: gchq/hdfs:latest
-    container_name: datanode7
-    environment:
-      - CLUSTER_NAME=hadoop
-    volumes:
-      - ./data/datanode7:/data1
-      - ./config/hadoop:/opt/hadoop/etc/hadoop:ro
-    depends_on:
-      - namenode
-    command: datanode  
-
-  datanode8:
-    image: gchq/hdfs:latest
-    container_name: datanode8
-    environment:
-      - CLUSTER_NAME=hadoop
-    volumes:
-      - ./data/datanode8:/data1
-      - ./config/hadoop:/opt/hadoop/etc/hadoop:ro
-    depends_on:
-      - namenode
-    command: datanode   
-
-  datanode9:
-    image: gchq/hdfs:latest
-    container_name: datanode9
-    environment:
-      - CLUSTER_NAME=hadoop
-    volumes:
-      - ./data/datanode9:/data1
-      - ./config/hadoop:/opt/hadoop/etc/hadoop:ro
-    depends_on:
-      - namenode
-    command: datanode   
-
-  datanode10:
-    image: gchq/hdfs:latest
-    container_name: datanode10
-    environment:
-      - CLUSTER_NAME=hadoop
-    volumes:
-      - ./data/datanode10:/data1
-      - ./config/hadoop:/opt/hadoop/etc/hadoop:ro
-    depends_on:
-      - namenode
-    command: datanode
 
 volumes:
   namenode_data:
