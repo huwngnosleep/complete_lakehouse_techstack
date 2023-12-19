@@ -33,6 +33,7 @@ services:
   datanode1:
     <<: *datanode-common
     container_name: datanode1
+    hostname: datanode1
     volumes:
       - ./data/datanode1:/data1
       - ./config/hadoop:/opt/hadoop/etc/hadoop:ro
@@ -40,6 +41,7 @@ services:
   datanode2:
     <<: *datanode-common
     container_name: datanode2
+    hostname: datanode2
     volumes:
       - ./data/datanode2:/data1
       - ./config/hadoop:/opt/hadoop/etc/hadoop:ro
@@ -47,6 +49,7 @@ services:
   datanode3:
     <<: *datanode-common
     container_name: datanode3
+    hostname: datanode3
     volumes:
       - ./data/datanode3:/data1
       - ./config/hadoop:/opt/hadoop/etc/hadoop:ro
@@ -54,6 +57,7 @@ services:
   datanode4:
     <<: *datanode-common
     container_name: datanode4
+    hostname: datanode4
     volumes:
       - ./data/datanode4:/data1
       - ./config/hadoop:/opt/hadoop/etc/hadoop:ro
@@ -61,6 +65,7 @@ services:
   datanode5:
     <<: *datanode-common
     container_name: datanode5
+    hostname: datanode5
     volumes:
       - ./data/datanode5:/data1
       - ./config/hadoop:/opt/hadoop/etc/hadoop:ro
