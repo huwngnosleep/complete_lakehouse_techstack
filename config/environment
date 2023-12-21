@@ -1,6 +1,0 @@
-HIVE_HOME=/opt/hive-4.0.0-beta-1-bin
-SPARK_HOME=/opt/spark-3.5.0-bin-hadoop3-scala2.13
-HADOOP_HOME=/opt/hadoop-3.3.6
-ZOOKEEPER_HOME=/opt/zookeeper-3.9.1-bin
-KAFKA_HOME=/opt/kafka_2.13-3.6.0
-JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre
