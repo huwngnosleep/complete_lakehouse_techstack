@@ -9,11 +9,11 @@
     <!-- hive.metastore.warehouse.dir is deprecated since Spark 2.0.0 -->
     <property>
         <name>hive.metastore.warehouse.dir</name>
-        <value>hdfs://namenode:9000/metastore_warehouse</value>
+        <value>hdfs://namenode:9000/hive_metastore</value>
     </property>
     <property>
         <name>spark.sql.warehouse.dir</name>
-        <value>hdfs://namenode:9000/metastore_warehouse</value>
+        <value>hdfs://namenode:9000/hive_metastore</value>
     </property>
 
     <!-- Set HDFS location for Hive scratch directory -->

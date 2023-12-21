@@ -13,7 +13,7 @@ services:
       - 3306:3306
     volumes:
       - mysql_data:/var/lib/mysql
-    restart: always
+    restart: on-failure:3
       
   zookeeper:
     user: root
@@ -27,7 +27,7 @@ services:
     environment:
       - KAFKA_HOME=${KAFKA_HOME}
     command: "${KAFKA_HOME}/bin/zookeeper-server-start.sh ${KAFKA_HOME}/config/zookeeper.properties"
-    restart: always
+    restart: on-failure:3
 
   kafka:
     image: docker.io/bitnami/kafka:3.6
@@ -42,7 +42,7 @@ services:
       - ./data/kafka_logs:/etc/logs
       - ./config/kafka/server.properties:${KAFKA_HOME}/config/server.properties:ro
     command: ${KAFKA_HOME}/bin/kafka-server-start.sh ${KAFKA_HOME}/config/server.properties
-    restart: always  
+    restart: on-failure:3  
 
   kafka-connect:
     image: docker.io/bitnami/kafka:3.6
@@ -60,7 +60,7 @@ services:
       - ./config/kafka/connect-standalone.properties:${KAFKA_HOME}/config/connect-standalone.properties:ro
       - ./jars/debezium-connector-mysql:${KAFKA_HOME}/libs/debezium-connector-mysql
     command: "${KAFKA_HOME}/bin/connect-standalone.sh ${KAFKA_HOME}/config/connect-standalone.properties ${KAFKA_HOME}/config/inventory-mysql-kafka-connect.properties"
-    restart: always
+    restart: on-failure:3
     
   # kafka-ui:
   #   container_name: kafka-ui

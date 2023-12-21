@@ -5,7 +5,7 @@ services:
     image: 'clickhouse/clickhouse-keeper:23.11.1.2711-alpine'
     user: '101:101'
     container_name: clickhouse-keeper-1
-    restart: always
+    restart: on-failure:3
     volumes:
       - ./config/clickhouse/keeper_config_1.xml:/etc/clickhouse-keeper/keeper_config.xml
       - clickhouse-keeper-1:/var/lib/clickhouse/
@@ -14,7 +14,7 @@ services:
   clickhouse-keeper-2:
     image: 'clickhouse/clickhouse-keeper:23.11.1.2711-alpine'
     user: '101:101'
-    restart: always
+    restart: on-failure:3
     container_name: clickhouse-keeper-2
     volumes:
       - ./config/clickhouse/keeper_config_2.xml:/etc/clickhouse-keeper/keeper_config.xml
@@ -24,7 +24,7 @@ services:
   clickhouse-keeper-3:
     image: 'clickhouse/clickhouse-keeper:23.11.1.2711-alpine'
     user: '101:101'
-    restart: always
+    restart: on-failure:3
     container_name: clickhouse-keeper-3
     volumes:
       - ./config/clickhouse/keeper_config_3.xml:/etc/clickhouse-keeper/keeper_config.xml
@@ -37,7 +37,7 @@ services:
     environment:
       - SHARD=1
       - HOSTNAME=clickhouse1
-    restart: always
+    restart: on-failure:3
     ports:
       - "8123:8123"
       - "9009:9000"
@@ -55,7 +55,7 @@ services:
     environment:
       - SHARD=2
       - HOSTNAME=clickhouse2
-    restart: always
+    restart: on-failure:3
 
   clickhouse3:
     image: clickhouse/clickhouse-server:23.11.1.2711
@@ -63,7 +63,7 @@ services:
     volumes:
       - ./config/clickhouse/config.xml:/etc/clickhouse-server/config.xml
       - clickhouse3_data:/var/lib/clickhouse/
-    restart: always
+    restart: on-failure:3
     environment:
       - SHARD=3
       - HOSTNAME=clickhouse3
