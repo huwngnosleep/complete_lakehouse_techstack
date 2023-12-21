@@ -1,20 +1,20 @@
 version: '3.7'
 
 services:
-  spark-apps:
-    user: root
-    image: spark:latest
-    container_name: spark-apps
-    volumes:
-      - ./config/spark:${SPARK_HOME}/conf/:ro
-      - ./code:${SPARK_HOME}/code:ro
-      - spark_home:/home/spark:rw
-    command: "${SPARK_HOME}/bin/spark-submit 
-      --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0 \ 
-      --master spark://spark-master:${SPARK_MASTER_PORT} \
-      --executor-cores 4 \
-      --executor-memory 8G \
-      ${SPARK_HOME}/code/process.py"
+  # spark-apps:
+  #   user: root
+  #   image: spark:latest
+  #   container_name: spark-apps
+  #   volumes:
+  #     - ./config/spark:${SPARK_HOME}/conf/:ro
+  #     - ./code:${SPARK_HOME}/code:ro
+  #     - spark_home:/home/spark:rw
+  #   command: "${SPARK_HOME}/bin/spark-submit 
+  #     --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0 \ 
+  #     --master spark://spark-master:7077 \
+  #     --executor-cores 4 \
+  #     --executor-memory 8G \
+  #     ${SPARK_HOME}/code/process.py"
 
 # $SPARK_HOME/bin/spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0 --master spark://spark-master:7077 $SPARK_HOME/code/process.py
 
@@ -24,14 +24,15 @@ services:
     image: spark:latest
     container_name: spark-master
     ports:
-      - "${SPARK_MASTER_WEB_UI_PORT}:${SPARK_MASTER_WEB_UI_PORT}"
-      - "${SPARK_MASTER_PORT}:${SPARK_MASTER_PORT}"
+      - "${SPARK_MASTER_WEB_UI_PORT}:8080"
+      - "${SPARK_MASTER_PORT}:7077"
       
     volumes:
       - ./code:${SPARK_HOME}/code:ro
       - ./config/spark/spark-thriftserver.properties:${SPARK_HOME}/conf/spark-thriftserver.properties:ro
+      - ./config/spark/hive-site.xml:${SPARK_HOME}/conf/hive-site.xml
     healthcheck:
-      test: ["CMD", "curl", "-s", "http://localhost:${SPARK_MASTER_WEB_UI_PORT}/"]
+      test: ["CMD", "curl", "-s", "http://localhost:8080/"]
       interval: 1s
       timeout: 10s
       retries: 5
@@ -43,8 +44,8 @@ services:
     image: spark:latest
     container_name: spark-thriftserver
     ports:
-      - "${SPARK_THRIFT_WEB_UI_PORT}:${SPARK_THRIFT_WEB_UI_PORT}"
-      - "${SPARK_THRIFT_TCP_PORT}:${SPARK_THRIFT_TCP_PORT}"
+      - "${SPARK_THRIFT_WEB_UI_PORT}:4040"
+      - "${SPARK_THRIFT_TCP_PORT}:10000"
     depends_on:
       spark-master:
         condition: service_healthy
@@ -52,6 +53,7 @@ services:
       - ./.env:${SPARK_HOME}/.env:ro
       - ./scripts/start_sparkthrift.sh:${SPARK_HOME}/start_sparkthrift.sh
       - ./config/spark/spark-thriftserver.properties:${SPARK_HOME}/conf/spark-thriftserver.properties:ro
+      - ./config/spark/hive-site.xml:${SPARK_HOME}/conf/hive-site.xml
     entrypoint: ${SPARK_HOME}/start_sparkthrift.sh
 
   spark-worker-1:
@@ -61,8 +63,10 @@ services:
       spark-master:
         condition: service_healthy
     environment:
-      - SPARK_MASTER=spark://spark-master:${SPARK_MASTER_PORT}
-    command: bash -c "${SPARK_HOME}/sbin/start-worker.sh -m ${SPARK_WORKER_MEM} -c ${SPARK_WORKER_CORES} spark://spark-master:${SPARK_MASTER_PORT} && tail -f"
+      - SPARK_MASTER=spark://spark-master:7077
+    volumes:
+      - ./config/spark/hive-site.xml:${SPARK_HOME}/conf/hive-site.xml
+    command: bash -c "${SPARK_HOME}/sbin/start-worker.sh -m ${SPARK_WORKER_MEM} -c ${SPARK_WORKER_CORES} spark://spark-master:7077 && tail -f"
 
   spark-worker-2:
     image: spark:latest
@@ -71,10 +75,10 @@ services:
       spark-master:
         condition: service_healthy
     environment:
-      - SPARK_MASTER=spark://spark-master:${SPARK_MASTER_PORT}
-    # volumes: 
-      # - ./config/spark:${SPARK_HOME}/conf/:ro
-    command: bash -c "${SPARK_HOME}/sbin/start-worker.sh -m ${SPARK_WORKER_MEM} -c ${SPARK_WORKER_CORES} spark://spark-master:${SPARK_MASTER_PORT} && tail -f"
+      - SPARK_MASTER=spark://spark-master:7077
+    volumes:
+      - ./config/spark/hive-site.xml:${SPARK_HOME}/conf/hive-site.xml
+    command: bash -c "${SPARK_HOME}/sbin/start-worker.sh -m ${SPARK_WORKER_MEM} -c ${SPARK_WORKER_CORES} spark://spark-master:7077 && tail -f"
 
   
 volumes:

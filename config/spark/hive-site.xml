@@ -1,12 +1,20 @@
 <configuration>
     <!-- Set HDFS metastore URI -->
+    
     <property>
         <name>fs.defaultFS</name>
         <value>hdfs://namenode:9000</value>
     </property>
+
+    <!-- Configurations for HIVE metastore -->
+    <!-- hive.metastore.warehouse.dir is deprecated since Spark 2.0.0 -->
     <property>
         <name>hive.metastore.warehouse.dir</name>
-        <value>hdfs://namenode:9000/warehouse</value>
+        <value>hdfs://namenode:9000/metastore_warehouse</value>
+    </property>
+    <property>
+        <name>spark.sql.warehouse.dir</name>
+        <value>hdfs://namenode:9000/metastore_warehouse</value>
     </property>
 
     <!-- Set HDFS location for Hive scratch directory -->
@@ -14,6 +22,13 @@
         <name>hive.exec.scratchdir</name>
         <value>/tmp/hive</value>
         <description>Scratch space for Hive jobs</description>
+    </property>
+
+    <!-- Spark configurations -->
+    <property>
+        <name>spark.sql.catalogImplementation</name>
+        <value>hive</value>
+        <description></description>
     </property>
 
     <!-- Set HDFS location for Hive user home directory -->
