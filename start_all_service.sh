@@ -10,6 +10,6 @@ for sub_dir in $dirs; do
 done
 
 # print all container and ips
-echo RUNNGING CONTAINERS:
+echo RUNNING CONTAINERS:
 
 docker inspect -f '{{index (split .Name "/") 1}} {{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $(docker ps -aq)
