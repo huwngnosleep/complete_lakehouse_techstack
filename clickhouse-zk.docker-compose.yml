@@ -4,6 +4,7 @@ services:
   zookeeper:
     image: zookeeper:3.8.3
     container_name: zookeeper
+    restart: always
     ports:
       - "2181:2181"
 
@@ -13,6 +14,7 @@ services:
     environment:
       - SHARD=1
       - HOSTNAME=clickhouse1
+    restart: always
     ports:
       - "8123:8123"
       - "9009:9000"
@@ -24,6 +26,7 @@ services:
   clickhouse2:
     image: clickhouse/clickhouse-server:23.11.1.2711
     container_name: clickhouse2
+    restart: always
     volumes:
       - ./config/clickhouse/ch_with_zk_config.xml:/etc/clickhouse-server/config.xml
       - clickhouse2_data:/var/lib/clickhouse/
@@ -34,6 +37,7 @@ services:
   clickhouse3:
     image: clickhouse/clickhouse-server:23.11.1.2711
     container_name: clickhouse3
+    restart: always
     volumes:
       - ./config/clickhouse/ch_with_zk_config.xml:/etc/clickhouse-server/config.xml
       - clickhouse3_data:/var/lib/clickhouse/

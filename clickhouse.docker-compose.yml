@@ -5,9 +5,7 @@ services:
     image: 'clickhouse/clickhouse-keeper:23.11.1.2711-alpine'
     user: '101:101'
     container_name: clickhouse-keeper-1
-    networks:
-      clickhouse_cluster:
-        ipv4_address: 172.23.0.101
+    restart: always
     volumes:
       - ./config/clickhouse/keeper_config_1.xml:/etc/clickhouse-keeper/keeper_config.xml
       - clickhouse-keeper-1:/var/lib/clickhouse/
@@ -16,10 +14,8 @@ services:
   clickhouse-keeper-2:
     image: 'clickhouse/clickhouse-keeper:23.11.1.2711-alpine'
     user: '101:101'
+    restart: always
     container_name: clickhouse-keeper-2
-    networks:
-      clickhouse_cluster:
-        ipv4_address: 172.23.0.102
     volumes:
       - ./config/clickhouse/keeper_config_2.xml:/etc/clickhouse-keeper/keeper_config.xml
       - clickhouse-keeper-2:/var/lib/clickhouse/
@@ -28,10 +24,8 @@ services:
   clickhouse-keeper-3:
     image: 'clickhouse/clickhouse-keeper:23.11.1.2711-alpine'
     user: '101:101'
+    restart: always
     container_name: clickhouse-keeper-3
-    networks:
-      clickhouse_cluster:
-        ipv4_address: 172.23.0.103
     volumes:
       - ./config/clickhouse/keeper_config_3.xml:/etc/clickhouse-keeper/keeper_config.xml
       - clickhouse-keeper-3:/var/lib/clickhouse/
@@ -43,6 +37,7 @@ services:
     environment:
       - SHARD=1
       - HOSTNAME=clickhouse1
+    restart: always
     ports:
       - "8123:8123"
       - "9009:9000"
@@ -50,9 +45,6 @@ services:
     volumes:
       - ./config/clickhouse/config.xml:/etc/clickhouse-server/config.xml
       - clickhouse1_data:/var/lib/clickhouse/
-    networks:
-      clickhouse_cluster:
-        ipv4_address: 172.23.0.11
 
   clickhouse2:
     image: clickhouse/clickhouse-server:23.11.1.2711
@@ -63,9 +55,7 @@ services:
     environment:
       - SHARD=2
       - HOSTNAME=clickhouse2
-    networks:
-      clickhouse_cluster:
-        ipv4_address: 172.23.0.12
+    restart: always
 
   clickhouse3:
     image: clickhouse/clickhouse-server:23.11.1.2711
@@ -73,19 +63,11 @@ services:
     volumes:
       - ./config/clickhouse/config.xml:/etc/clickhouse-server/config.xml
       - clickhouse3_data:/var/lib/clickhouse/
+    restart: always
     environment:
       - SHARD=3
       - HOSTNAME=clickhouse3
-    networks:
-      clickhouse_cluster:
-        ipv4_address: 172.23.0.13
 
-networks:
-  clickhouse_cluster:
-    name: clickhouse_cluster
-    ipam:
-      config:
-        - subnet: 172.23.0.0/24
 
 volumes:
   clickhouse1_data:
