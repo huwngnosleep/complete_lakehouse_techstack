@@ -3,10 +3,14 @@ version: "3.7"
 x-hdfs-common:
   &hdfs-common
   image: gchq/hdfs:latest
+  networks:
+    default_net:
   environment:
     - CLUSTER_NAME=hadoop
   volumes:
-    - ./config/hadoop:/opt/hadoop/etc/hadoop:ro
+    - ./config:/opt/hadoop/etc/hadoop:ro
+  restart: on-failure:3
+
 
 x-datanode-common:
   &datanode-common
@@ -19,60 +23,54 @@ services:
   namenode:
     <<: *hdfs-common
     container_name: namenode
+    hostname: namenode
     ports:
       - "9870:9870"
       - "9000:9000"
     volumes:
-      - ./config/hadoop:/opt/hadoop/etc/hadoop:ro
+      - ./config:/opt/hadoop/etc/hadoop:ro
       - ./data/namenode:/data1
-      - ./sample_data/:/opt/sample_data/
     command: namenode
-    restart: on-failure:3
 
   datanode1:
     <<: *datanode-common
     container_name: datanode1
     hostname: datanode1
-    restart: on-failure:3
     volumes:
       - ./data/datanode1:/data1
-      - ./config/hadoop:/opt/hadoop/etc/hadoop:ro
+      - ./config:/opt/hadoop/etc/hadoop:ro
 
   datanode2:
     <<: *datanode-common
     container_name: datanode2
     hostname: datanode2
-    restart: on-failure:3
     volumes:
       - ./data/datanode2:/data1
-      - ./config/hadoop:/opt/hadoop/etc/hadoop:ro
+      - ./config:/opt/hadoop/etc/hadoop:ro
       
   datanode3:
     <<: *datanode-common
     container_name: datanode3
     hostname: datanode3
-    restart: on-failure:3
     volumes:
       - ./data/datanode3:/data1
-      - ./config/hadoop:/opt/hadoop/etc/hadoop:ro
+      - ./config:/opt/hadoop/etc/hadoop:ro
 
   datanode4:
     <<: *datanode-common
     container_name: datanode4
     hostname: datanode4
-    restart: on-failure:3
     volumes:
       - ./data/datanode4:/data1
-      - ./config/hadoop:/opt/hadoop/etc/hadoop:ro
+      - ./config:/opt/hadoop/etc/hadoop:ro
 
   datanode5:
     <<: *datanode-common
     container_name: datanode5
     hostname: datanode5
-    restart: on-failure:3
     volumes:
       - ./data/datanode5:/data1
-      - ./config/hadoop:/opt/hadoop/etc/hadoop:ro
+      - ./config:/opt/hadoop/etc/hadoop:ro
 
 volumes:
   namenode_data:
@@ -81,3 +79,7 @@ volumes:
   datanode3_data:
   datanode4_data:
   datanode5_data:
+    
+networks:
+  default_net:
+    external: true

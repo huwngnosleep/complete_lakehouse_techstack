@@ -1,0 +1,50 @@
+version: '3.7'
+
+services:
+  metastore-mysql:
+    networks:
+      default_net:
+    image: mysql:5.7
+    command: --default-authentication-plugin=mysql_native_password
+    container_name: metastore-mysql
+    hostname: metastore-mysql
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "--password=root"]
+      interval: 1s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - hive_metastore_mysql:/var/lib/mysql
+    restart: on-failure:3
+
+  metastore:
+    networks:
+      default_net:
+    user: root
+    image: apache/hive:3.1.3
+    container_name: metastore
+    hostname: metastore
+    depends_on:
+      metastore-mysql:
+        condition: service_healthy
+    ports:
+      - "9083:9083"
+    environment:
+      - DB_DRIVER=mysql
+      - SERVICE_NAME=metastore
+      - IS_RESUME="true"
+    volumes:
+      - ./config/hive-site.xml:/opt/hive/conf/hive-site.xml
+      - ./jars/mysql-connector-java-8.0.17.jar:/opt/hive/lib/mysql-connector-java-8.0.17.jar
+    restart: on-failure:3
+  
+volumes:
+  hive_metastore_mysql:
+   
+networks:
+  default_net:
+    external: true

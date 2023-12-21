@@ -1,0 +1,77 @@
+<configuration>
+    <!-- Set HDFS metastore URI -->
+    <property>
+        <name>fs.defaultFS</name>
+        <value>hdfs://namenode:9000</value>
+    </property>
+
+    <!-- Configurations for HIVE metastore -->
+    <!-- hive.metastore.warehouse.dir is deprecated since Spark 2.0.0 -->
+    <property>
+        <name>hive.metastore.warehouse.dir</name>
+        <value>/hive_metastore</value>
+    </property>
+    <property>
+        <name>spark.sql.warehouse.dir</name>
+        <value>/hive_metastore</value>
+    </property>
+
+    <!-- Set HDFS location for Hive scratch directory -->
+    <property>
+        <name>hive.exec.scratchdir</name>
+        <value>/tmp/hive</value>
+        <description>Scratch space for Hive jobs</description>
+    </property>
+
+    <!-- Spark configurations -->
+    <property>
+        <name>spark.sql.catalogImplementation</name>
+        <value>hive</value>
+        <description></description>
+    </property>
+
+    <!-- Set HDFS location for Hive user home directory -->
+    <property>
+        <name>hive.metastore.user.home.dir</name>
+        <value>/user/hive</value>
+        <description>Location in HDFS for user home directories</description>
+    </property>
+
+    <!-- HIVE metastore configurations -->
+    <property> 
+      <name>hive.metastore.uris</name> 
+      <value>thrift://metastore:9083</value> 
+      <description>IP address (or fully-qualified domain name) and port of the metastore host</description> 
+    </property> 
+    <property> 
+      <name>hive.metastore.schema.verification</name> 
+      <value>true</value> 
+    </property>    
+    <property> 
+      <name>metastore.create.as.acid</name> 
+      <value>true</value> 
+    </property> 
+    <property>
+        <name>datanucleus.autoStartMechanism</name>
+        <value>SchemaTable</value>
+    </property>
+
+    <!-- HIVE metastore MYSQL connector configurations -->
+    <property> 
+      <name>javax.jdo.option.ConnectionDriverName</name> 
+      <value>com.mysql.cj.jdbc.Driver</value> 
+    </property> 
+    <property> 
+      <name>javax.jdo.option.ConnectionUserName</name> 
+      <value>root</value> 
+    </property> 
+    <property> 
+      <name>javax.jdo.option.ConnectionPassword</name> 
+      <value>root</value> 
+    </property> 
+    <property> 
+      <name>javax.jdo.option.ConnectionURL</name> 
+      <value>jdbc:mysql://metastore-mysql:3306/hivemetastore?enabledTLSProtocols=TLSv1.2</value> 
+      <description>the URL of the MySQL database</description> 
+    </property> 
+</configuration>
