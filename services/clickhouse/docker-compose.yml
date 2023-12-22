@@ -12,6 +12,7 @@ services:
     image: 'clickhouse/clickhouse-keeper:23.11.1.2711-alpine'
     user: '101:101'
     container_name: clickhouse-keeper-1
+    
     volumes:
       - ./config/keeper_config_1.xml:/etc/clickhouse-keeper/keeper_config.xml
       - clickhouse-keeper-1:/var/lib/clickhouse/

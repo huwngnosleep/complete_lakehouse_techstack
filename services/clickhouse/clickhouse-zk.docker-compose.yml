@@ -1,14 +1,24 @@
 version: "3.8"
 
+x-service-common:
+  &service-common
+  networks:
+    default_net:
+  restart: on-failure:3
+
+
 services:
-  zookeeper:
+  clickhouse-zookeeper:
+    <<: *service-common
     image: zookeeper:3.8.3
-    container_name: zookeeper
+    container_name: clickhouse-zookeeper
+    hostname: clickhouse-zookeeper
     restart: on-failure:3
-    ports:
-      - "2181:2181"
+    # ports:
+    #   - "2181:2181"
 
   clickhouse1:
+    <<: *service-common
     container_name: clickhouse1
     image: clickhouse/clickhouse-server:23.11.1.2711
     environment:
@@ -20,26 +30,28 @@ services:
       - "9009:9000"
       - "9004:9004"
     volumes:
-      - ./config/clickhouse/ch_with_zk_config.xml:/etc/clickhouse-server/config.xml
+      - ./config/ch_with_zk_config.xml:/etc/clickhouse-server/config.xml
       - clickhouse1_data:/var/lib/clickhouse/
 
   clickhouse2:
+    <<: *service-common
     image: clickhouse/clickhouse-server:23.11.1.2711
     container_name: clickhouse2
     restart: on-failure:3
     volumes:
-      - ./config/clickhouse/ch_with_zk_config.xml:/etc/clickhouse-server/config.xml
+      - ./config/ch_with_zk_config.xml:/etc/clickhouse-server/config.xml
       - clickhouse2_data:/var/lib/clickhouse/
     environment:
       - SHARD=2
       - HOSTNAME=clickhouse2
 
   clickhouse3:
+    <<: *service-common
     image: clickhouse/clickhouse-server:23.11.1.2711
     container_name: clickhouse3
     restart: on-failure:3
     volumes:
-      - ./config/clickhouse/ch_with_zk_config.xml:/etc/clickhouse-server/config.xml
+      - ./config/ch_with_zk_config.xml:/etc/clickhouse-server/config.xml
       - clickhouse3_data:/var/lib/clickhouse/
     environment:
       - SHARD=3
@@ -49,9 +61,7 @@ volumes:
   clickhouse1_data:
   clickhouse2_data:
   clickhouse3_data:
-  clickhouse-keeper-1:
-  clickhouse-keeper-log-1:
-  clickhouse-keeper-2:
-  clickhouse-keeper-log-2:
-  clickhouse-keeper-3:
-  clickhouse-keeper-log-3:
+
+networks:
+  default_net:
+    external: true
