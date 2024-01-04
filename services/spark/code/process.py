@@ -1,6 +1,6 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import from_json, col, when, to_date
-from pyspark.sql.types import StructType, StructField, StringType, LongType
+from pyspark.sql.functions import from_json, col, when, to_date, to_timestamp
+from pyspark.sql.types import StructType, StructField, StringType, LongType, TimestampType, DateType
 
 # Define the Kafka topic to read from
 kafka_topic = "kafka-mysql-hung-test.test.inventory"
@@ -10,16 +10,19 @@ schema = StructType([
     StructField("before", StructType([
         StructField("id", LongType(), True),
         StructField("userid", LongType(), True),
-        StructField("name", StringType(), True)
+        StructField("name", StringType(), True),
+        StructField("created_date", LongType(), True),
+        StructField("modified_date", LongType(), True),
     ]), True),
     StructField("after", StructType([
-            StructField("id", LongType(), True),
-            StructField("userid", LongType(), True),
-            StructField("name", StringType(), True)
+        StructField("id", LongType(), True),
+        StructField("userid", LongType(), True),
+        StructField("name", StringType(), True),
+        StructField("created_date", LongType(), True),
+        StructField("modified_date", LongType(), True),
     ]), True),
-    # StructField("source", StructType(), True),
     StructField("op", StringType(), True),
-    StructField("ts_ms", StringType(), True)
+    StructField("ts_ms", LongType(), True),
 ])
 
 # Create a Spark session
@@ -31,10 +34,21 @@ spark = SparkSession.builder \
 
 spark.sql("CREATE DATABASE IF NOT EXISTS test")
 spark.sql("DROP TABLE IF EXISTS spark_catalog.test.inventory")
-create_table_sql = """CREATE TABLE IF NOT EXISTS spark_catalog.test.inventory 
-                    (id BIGINT, userid BIGINT, name STRING, date_timestamp DATE, payload_ts_ms STRING, operation STRING)
+create_table_sql = """CREATE TABLE IF NOT EXISTS spark_catalog.test.inventory (   
+                        id BIGINT, 
+                        userid BIGINT, 
+                        name STRING, 
+                        created_date BIGINT, 
+                        modified_date BIGINT, 
+                        date_timestamp DATE, 
+                        payload_ts_ms BIGINT, 
+                        operation STRING
+                    )
                     USING parquet
-                    LOCATION '/test/inventory'  
+                    OPTIONS (
+                        'path' '/test/inventory',
+                        'delete_data' 'true'
+                    )
                 """
 
 spark.sql(create_table_sql)
@@ -47,7 +61,7 @@ df = (
     .format("kafka")
     .option("kafka.bootstrap.servers", "kafka:9092")
     .option("subscribe", kafka_topic)
-    .option("startingOffsets", "earliest")
+    .option("startingOffsets", "latest")
     .option("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer")
     .load()
 )
@@ -72,20 +86,22 @@ df = (
     .selectExpr("data_capture.*", "date_timestamp", "payload_ts_ms", "operation")
 )
 
-# Save DataFrame as a Hive table
+# Save DataFrame as a Parquet table
 streaming_query = df.writeStream \
     .format("parquet") \
     .outputMode("append") \
     .option("checkpointLocation", "/test/inventory/checkpoint") \
     .option("path", "/test/inventory") \
     .start()
+streaming_query.awaitTermination()
 
-# streaming_query = (
+
+# -- DEBUG --
+# streaming_debug_query = (
 #     df.writeStream
 #     .outputMode("append")
 #     .format("console")
 #     .start()
 # )
+# streaming_debug_query.awaitTermination()
 
-# Keep the streaming query running
-streaming_query.awaitTermination()

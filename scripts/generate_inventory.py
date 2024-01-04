@@ -6,7 +6,7 @@ from faker import Faker
 # pip install faker
 
 MAX_NUM_USER = 1000
-MAX_NUM_INVENTORY = 3000
+MAX_NUM_INVENTORY = 1000
 MAX_ID_RANGE = 1000
 # MySQL connection parameters
 db_config = {
