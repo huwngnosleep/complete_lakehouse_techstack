@@ -1,27 +1,32 @@
 version: '3.7'
 
 services:
-  # spark-apps:
-  #   user: root
-  #   image: spark:latest
-  #   container_name: spark-apps
-  #   volumes:
-  #     - ./config:${SPARK_HOME}/conf/:ro
-  #     - ./code:${SPARK_HOME}/code:ro
-  #     - spark_home:/home/spark:rw
-  #   command: "${SPARK_HOME}/bin/spark-submit 
-  #     --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0 \ 
-  #     --master spark://spark-master:7077 \
-  #     --executor-cores 4 \
-  #     --executor-memory 8G \
-  #     ${SPARK_HOME}/code/process.py"
+  cdc-mysql-inventory:
+    user: root
+    image: spark:3.5.0
+    container_name: cdc-mysql-inventory
+    networks:
+      default_net:
+    depends_on:
+      spark-master:
+        condition: service_healthy
+    volumes:
+      - ./config:${SPARK_HOME}/conf/:ro
+      - ./code:${SPARK_HOME}/code:ro
+      - spark_home:/home/spark:rw
+      - ./config/cdc-mysql-inventory.properties:${SPARK_HOME}/conf/cdc-mysql-inventory.properties:ro
+    command: "${SPARK_HOME}/bin/spark-submit 
+      --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0 \ 
+      --master spark://spark-master:7077 \
+      --properties-file $SPARK_HOME/conf/cdc-mysql-inventory.properties \
+      ${SPARK_HOME}/code/process.py"
 
 # $SPARK_HOME/bin/spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0 --master spark://spark-master:7077 $SPARK_HOME/code/process.py
 
   spark-master:
     # root user to avoid permission deny in $SPARK_HOME, need improving later
-    user: root
-    image: spark:latest
+    user: root 
+    image: spark:3.5.0
     container_name: spark-master
     networks:
       default_net:
@@ -43,7 +48,7 @@ services:
       && tail -f"
 
   spark-thriftserver:
-    image: spark:latest
+    image: spark:3.5.0
     container_name: spark-thriftserver
     networks:
       default_net:
@@ -62,7 +67,7 @@ services:
     entrypoint: ${SPARK_HOME}/start_sparkthrift.sh
     
   spark-worker-1:
-    image: spark:latest
+    image: spark:3.5.0
     container_name: spark-worker-1
     networks:
       default_net:
@@ -77,7 +82,7 @@ services:
     restart: on-failure:3
 
   spark-worker-2:
-    image: spark:latest
+    image: spark:3.5.0
     container_name: spark-worker-2
     networks:
       default_net:
