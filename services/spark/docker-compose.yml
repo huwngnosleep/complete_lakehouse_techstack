@@ -1,43 +1,43 @@
 version: '3.7'
 
+x-service-common:
+  &service-common
+  image: spark:3.5.0
+  networks:
+    default_net:
+  restart: on-failure:3
+  environment:
+    - SPARK_MASTER=spark://spark-master:7077
+    - SPARK_HOME=${SPARK_HOME}
+  volumes:
+    - ./jars/iceberg-spark-runtime-3.4_2.12-1.4.3.jar:${SPARK_HOME}/jars/iceberg-spark-runtime-3.4_2.12-1.4.3.jar:ro
+    - ./config:${SPARK_HOME}/conf/:ro
+    - ./code:${SPARK_HOME}/code:ro
+    - ./scripts:${SPARK_HOME}/scripts:ro
+    - ./.env:${SPARK_HOME}/.env:ro
+    
 services:
   cdc-mysql-inventory:
+    <<: *service-common
     user: root
-    image: spark:3.5.0
     container_name: cdc-mysql-inventory
-    networks:
-      default_net:
     depends_on:
       spark-master:
         condition: service_healthy
-    volumes:
-      - ./config:${SPARK_HOME}/conf/:ro
-      - ./code:${SPARK_HOME}/code:ro
-      - spark_home:/home/spark:rw
-      - ./config/cdc-mysql-inventory.properties:${SPARK_HOME}/conf/cdc-mysql-inventory.properties:ro
     command: "${SPARK_HOME}/bin/spark-submit 
       --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0 \ 
       --master spark://spark-master:7077 \
       --properties-file $SPARK_HOME/conf/cdc-mysql-inventory.properties \
       ${SPARK_HOME}/code/process.py"
 
-# $SPARK_HOME/bin/spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0 --master spark://spark-master:7077 $SPARK_HOME/code/process.py
-
   spark-master:
     # root user to avoid permission deny in $SPARK_HOME, need improving later
+    <<: *service-common
     user: root 
-    image: spark:3.5.0
     container_name: spark-master
-    networks:
-      default_net:
     ports:
       - "${SPARK_MASTER_WEB_UI_PORT}:8080"
       - "${SPARK_MASTER_PORT}:7077"
-    restart: on-failure:3
-    volumes:
-      - ./code:${SPARK_HOME}/code:ro
-      - ./config/spark-thriftserver.properties:${SPARK_HOME}/conf/spark-thriftserver.properties:ro
-      - ./config/hive-site.xml:${SPARK_HOME}/conf/hive-site.xml
     healthcheck:
       test: ["CMD", "curl", "-s", "http://localhost:8080/"]
       interval: 1s
@@ -48,53 +48,31 @@ services:
       && tail -f"
 
   spark-thriftserver:
-    image: spark:3.5.0
-    container_name: spark-thriftserver
-    networks:
-      default_net:
+    <<: *service-common
     ports:
       - "${SPARK_THRIFT_WEB_UI_PORT}:4040"
       - "${SPARK_THRIFT_TCP_PORT}:10000"
+    container_name: spark-thriftserver
     depends_on:
       spark-master:
         condition: service_healthy
-    restart: on-failure:3
-    volumes:
-      - ./.env:${SPARK_HOME}/.env:ro
-      - ./scripts/start_sparkthrift.sh:${SPARK_HOME}/start_sparkthrift.sh
-      - ./config/spark-thriftserver.properties:${SPARK_HOME}/conf/spark-thriftserver.properties:ro
-      - ./config/hive-site.xml:${SPARK_HOME}/conf/hive-site.xml
-    entrypoint: ${SPARK_HOME}/start_sparkthrift.sh
+    entrypoint: ${SPARK_HOME}/scripts/start_sparkthrift.sh
     
   spark-worker-1:
-    image: spark:3.5.0
+    <<: *service-common
     container_name: spark-worker-1
-    networks:
-      default_net:
     depends_on:
       spark-master:
         condition: service_healthy
-    environment:
-      - SPARK_MASTER=spark://spark-master:7077
-    volumes:
-      - ./config/hive-site.xml:${SPARK_HOME}/conf/hive-site.xml
     command: bash -c "${SPARK_HOME}/sbin/start-worker.sh -m ${SPARK_WORKER_MEM} -c ${SPARK_WORKER_CORES} spark://spark-master:7077 && tail -f"
-    restart: on-failure:3
 
   spark-worker-2:
-    image: spark:3.5.0
+    <<: *service-common
     container_name: spark-worker-2
-    networks:
-      default_net:
     depends_on:
       spark-master:
         condition: service_healthy
-    environment:
-      - SPARK_MASTER=spark://spark-master:7077
-    volumes:
-      - ./config/hive-site.xml:${SPARK_HOME}/conf/hive-site.xml
     command: bash -c "${SPARK_HOME}/sbin/start-worker.sh -m ${SPARK_WORKER_MEM} -c ${SPARK_WORKER_CORES} spark://spark-master:7077 && tail -f"
-    restart: on-failure:3
 
   
 volumes:

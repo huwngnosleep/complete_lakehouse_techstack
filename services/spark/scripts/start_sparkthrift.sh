@@ -1,8 +1,10 @@
 #!/bin/bash
-source ../.env
-echo SPARK MASTER $SPARK_MASTER_HOST:$SPARK_MASTER_PORT
+echo SPARK_MASTER - $SPARK_MASTER
 while true; do
-    bash $SPARK_HOME/sbin/start-thriftserver.sh --master spark://$SPARK_MASTER_HOST:$SPARK_MASTER_PORT --properties-file $SPARK_HOME/conf/spark-thriftserver.properties
-
-    sleep 30
+    std_out=$(bash $SPARK_HOME/sbin/start-thriftserver.sh \
+        --master $SPARK_MASTER \
+        --properties-file $SPARK_HOME/conf/spark-thriftserver.properties) 
+        
+    tail -f $std_out
+    # sleep 30
 done

@@ -80,6 +80,7 @@ df = (
     .withColumn("operation", when(col("value_json.op") == "c", "INSERT")
                                     .when(col("op") == "u", "UPDATE")
                                     .when(col("op") == "d", "DELETE")
+                                    .when(col("op") == "r", "READ")
                                     .otherwise("UNKNOWN"))
     .withColumn("date_timestamp", to_date("timestamp"))
     .withColumn("payload_ts_ms", col("value_json.ts_ms"))
