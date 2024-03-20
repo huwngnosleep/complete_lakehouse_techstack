@@ -1,0 +1,17 @@
+version: '3.7'
+    
+services:
+  traffic_data_generator:
+    # image: python:alpine3.19
+    build: .
+    user: root
+    networks:
+      default_net:
+    container_name: traffic_data_generator
+    volumes:
+      - ./code:/opt/code:ro
+    command: python3 /opt/code/generate_data.py
+  
+networks:
+  default_net:
+    external: true

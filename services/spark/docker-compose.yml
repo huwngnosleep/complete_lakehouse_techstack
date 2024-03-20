@@ -17,18 +17,18 @@ x-service-common:
     - ./.env:${SPARK_HOME}/.env:ro
     
 services:
-  cdc-mysql-inventory:
+  traffic_data_stream:
     <<: *service-common
     user: root
-    container_name: cdc-mysql-inventory
+    container_name: traffic_data_stream
     depends_on:
       spark-master:
         condition: service_healthy
     command: "${SPARK_HOME}/bin/spark-submit 
       --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0 \ 
       --master spark://spark-master:7077 \
-      --properties-file $SPARK_HOME/conf/cdc-mysql-inventory.properties \
-      ${SPARK_HOME}/code/process.py"
+      --properties-file $SPARK_HOME/conf/traffic_data_stream.properties \
+      ${SPARK_HOME}/code/process_traffic_data.py"
 
   spark-master:
     # root user to avoid permission deny in $SPARK_HOME, need improving later
