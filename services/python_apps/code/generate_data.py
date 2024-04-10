@@ -17,7 +17,7 @@ def send_new_messages():
     for i in range(100):
         random_point = f"Point_{random.randint(1, NUM_VEHICLE)}"
         new_location = change_location(init_coordinates, random_point, random.randint(1, 5))
-        producer.send('coor', new_location)
+        producer.send('vehicle_coordination', new_location)
         
     producer.flush()
 

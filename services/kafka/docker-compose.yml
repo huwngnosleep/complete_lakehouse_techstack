@@ -34,6 +34,19 @@ services:
       - KAFKA_HOME=${KAFKA_HOME}
     command: "${KAFKA_HOME}/bin/zookeeper-server-start.sh ${KAFKA_HOME}/config/zookeeper.properties"
 
+  kafka-ui:
+    <<: *service-common
+    depends_on:
+      - kafka
+    container_name: kafka-ui
+    image: provectuslabs/kafka-ui:latest
+    ports:
+      - 9090:8080
+    environment:
+      DYNAMIC_CONFIG_ENABLED: 'true'
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+
   kafka:
     <<: *service-common
     image: docker.io/bitnami/kafka:3.6
@@ -48,36 +61,56 @@ services:
       - ./data/kafka_logs:/etc/logs
       - ./config/server.properties:${KAFKA_HOME}/config/server.properties:ro
     command: ${KAFKA_HOME}/bin/kafka-server-start.sh ${KAFKA_HOME}/config/server.properties
-    restart: on-failure:3
+    restart: always
     healthcheck:
       test: ["CMD-SHELL", "kafka-topics.sh --list --bootstrap-server kafka:9092"]
       interval: 30s
       timeout: 10s
       retries: 5
 
-  kafka-connect:
+  kafka_broker_001:
     <<: *service-common
     image: docker.io/bitnami/kafka:3.6
-    ports:
-      - "8083:8083"
-    hostname: kafka-connect
-    container_name: kafka-connect
-    depends_on:
-      kafka:
-        condition: service_healthy
+    container_name: kafka_broker_001  
+    hostname: kafka_broker_001
+    environment:
+      - KAFKA_HOME=${KAFKA_HOME}
+    user: root
+    volumes:
+      - ./data/kafka_broker_001_logs:/etc/logs
+      - ./config/server_001.properties:${KAFKA_HOME}/config/server.properties:ro
+    command: ${KAFKA_HOME}/bin/kafka-server-start.sh ${KAFKA_HOME}/config/server.properties
+    restart: always
+
     healthcheck:
-      test: ["CMD-SHELL", "kafka-topics.sh --list --bootstrap-server kafka:9092"]
+      test: ["CMD-SHELL", "kafka-topics.sh --list --bootstrap-server kafka_broker_001:9092"]
       interval: 30s
       timeout: 10s
       retries: 5
-    environment:
-      - KAFKA_HOME=${KAFKA_HOME}
-    volumes:
-      - ./config/inventory-mysql-kafka-connect.properties:${KAFKA_HOME}/config/inventory-mysql-kafka-connect.properties:ro
-      - ./config/server.properties:${KAFKA_HOME}/config/server.properties:ro
-      - ./config/connect-standalone.properties:${KAFKA_HOME}/config/connect-standalone.properties:ro
-      - ./jars/debezium-connector-mysql:${KAFKA_HOME}/libs/debezium-connector-mysql
-    command: "${KAFKA_HOME}/bin/connect-standalone.sh ${KAFKA_HOME}/config/connect-standalone.properties ${KAFKA_HOME}/config/inventory-mysql-kafka-connect.properties"
+
+  # kafka-connect:
+  #   <<: *service-common
+  #   image: docker.io/bitnami/kafka:3.6
+  #   ports:
+  #     - "8083:8083"
+  #   hostname: kafka-connect
+  #   container_name: kafka-connect
+  #   depends_on:
+  #     kafka:
+  #       condition: service_healthy
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "kafka-topics.sh --list --bootstrap-server kafka:9092"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 5
+  #   environment:
+  #     - KAFKA_HOME=${KAFKA_HOME}
+  #   volumes:
+  #     - ./config/inventory-mysql-kafka-connect.properties:${KAFKA_HOME}/config/inventory-mysql-kafka-connect.properties:ro
+  #     - ./config/server.properties:${KAFKA_HOME}/config/server.properties:ro
+  #     - ./config/connect-standalone.properties:${KAFKA_HOME}/config/connect-standalone.properties:ro
+  #     - ./jars/debezium-connector-mysql:${KAFKA_HOME}/libs/debezium-connector-mysql
+  #   command: "${KAFKA_HOME}/bin/connect-standalone.sh ${KAFKA_HOME}/config/connect-standalone.properties ${KAFKA_HOME}/config/inventory-mysql-kafka-connect.properties"
 
 volumes:
   mysql_data:
