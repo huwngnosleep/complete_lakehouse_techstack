@@ -51,9 +51,9 @@ services:
     restart: on-failure:3
     healthcheck:
       test: ["CMD-SHELL", "kafka-topics.sh --list --bootstrap-server kafka:9092"]
-      interval: 10s
+      interval: 30s
       timeout: 10s
-      retries: 3
+      retries: 5
 
   kafka-connect:
     <<: *service-common
@@ -67,9 +67,9 @@ services:
         condition: service_healthy
     healthcheck:
       test: ["CMD-SHELL", "kafka-topics.sh --list --bootstrap-server kafka:9092"]
-      interval: 10s
+      interval: 30s
       timeout: 10s
-      retries: 3
+      retries: 5
     environment:
       - KAFKA_HOME=${KAFKA_HOME}
     volumes:
