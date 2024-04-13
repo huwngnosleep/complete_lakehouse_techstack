@@ -29,4 +29,9 @@
         <name>dfs.namenode.replication.max</name>
         <value>5</value> 
     </property>
+
+    <property>
+        <name>mapreduce.input.fileinputformat.input.dir.recursive</name>
+        <value>true</value> 
+    </property>
 </configuration>
