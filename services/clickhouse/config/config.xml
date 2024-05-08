@@ -5,18 +5,30 @@
     <!-- <interserver_http_host>::</interserver_http_host> -->
     <interserver_http_port>9009</interserver_http_port>
     <mysql_port>9004</mysql_port>
-    
+
     <remote_servers>
-        <bi_platform>
+        <datahub>
             <shard>
                 <replica>
                     <host>clickhouse1</host>
+                    <port>9000</port>
+                </replica>
+                <replica>
+                    <host>clickhouse4</host>
+                    <port>9000</port>
+                </replica>
+                <replica>
+                    <host>clickhouse5</host>
                     <port>9000</port>
                 </replica>
             </shard>
             <shard>
                 <replica>
                     <host>clickhouse2</host>
+                    <port>9000</port>
+                </replica>
+                <replica>
+                    <host>clickhouse6</host>
                     <port>9000</port>
                 </replica>
             </shard>
@@ -26,7 +38,7 @@
                     <port>9000</port>
                 </replica>
             </shard>
-        </bi_platform>
+        </datahub>
     </remote_servers>
 
     <zookeeper>
