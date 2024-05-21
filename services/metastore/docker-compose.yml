@@ -36,7 +36,7 @@ services:
     environment:
       - DB_DRIVER=mysql
       - SERVICE_NAME=metastore
-      - IS_RESUME="true"
+      - IS_RESUME="false"
     volumes:
       - ./config/hive-site.xml:/opt/hive/conf/hive-site.xml
       - ./jars/mysql-connector-java-8.0.17.jar:/opt/hive/lib/mysql-connector-java-8.0.17.jar
