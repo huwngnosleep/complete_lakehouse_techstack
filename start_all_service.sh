@@ -19,7 +19,7 @@ dirs=$(ls ./services)
 
 # Loop through each file in the list
 for sub_dir in $dirs; do
-    docker compose -f ./services/$sub_dir/docker-compose.yml up -d
+    docker-compose -f ./services/$sub_dir/docker-compose.yml up -d
 done
 
 # print all container and ips

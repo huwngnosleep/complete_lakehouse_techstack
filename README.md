@@ -1,3 +1,5 @@
+![stack architecture](architecture.jpg)
+
 # This project implements an end-to-end tech stack for a data platform
 follow Data Lake-House architecture, there are main interfaces of this platform: 
 - Distributed query/execution engine: Spark Thrift Server
