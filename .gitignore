@@ -2,3 +2,4 @@ metastore_db
 data
 ip.txt
 /**/*.log
+/**/*.pyc
