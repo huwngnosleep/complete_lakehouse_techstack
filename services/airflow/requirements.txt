@@ -1,2 +1,3 @@
 pandas==2.1.4
 pymssql==2.3.0
+PyHDFS==0.3.1
