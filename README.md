@@ -15,10 +15,16 @@ follow Data Lake-House architecture, there are main interfaces of this platform:
 # First run:
 1. Change the variable IS_RESUME in ./services/metastore/docker-compose.yml to False
 
-2. Create docker network
+2. Grant all permissions for HDFS
+```
+sudo mkdir -p ./services/hadoop/data
+sudo chmod  777 ./services/hadoop/data/*
+```
+
+1. Create docker network
 `docker network create default_net`
 
-3. Docker up
+1. Docker up
 `bash start_all_service.sh`
 
 After finishing all the above steps, change IS_RESUME back to True then rerun start all service
