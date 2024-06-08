@@ -36,6 +36,9 @@ with DAG(
             hdfs_client.delete(hdfs_raw_dir + dest_file_name)
             if not hdfs_client.exists(hdfs_raw_dir):
                 hdfs_client.mkdirs(hdfs_raw_dir)
-            hdfs_client.create(hdfs_raw_dir + dest_file_name, temp_file.name)
+            hdfs_client.copy_from_local(
+                localsrc=temp_file.name, 
+                dest=hdfs_raw_dir + dest_file_name
+            )
         mssql_conn.close()
     get_raw_data()
