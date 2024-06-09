@@ -18,7 +18,7 @@ services:
       timeout: 10s
       retries: 5
     volumes:
-      - hive_metastore_mysql:/var/lib/mysql
+      - ./metastore_mysql:/var/lib/mysql
     restart: on-failure:3
 
   metastore:
@@ -36,15 +36,12 @@ services:
     environment:
       - DB_DRIVER=mysql
       - SERVICE_NAME=metastore
-      - IS_RESUME="false"
+      - IS_RESUME=true
     volumes:
       - ./config/hive-site.xml:/opt/hive/conf/hive-site.xml
       - ./jars/mysql-connector-java-8.0.17.jar:/opt/hive/lib/mysql-connector-java-8.0.17.jar
     restart: on-failure:3
   
-volumes:
-  hive_metastore_mysql:
-   
 networks:
   default_net:
     external: true

@@ -7,19 +7,6 @@ x-service-common:
   restart: on-failure:3
 
 services:
-  mysql:
-    <<: *service-common
-    image: mysql:latest
-    command: --default-authentication-plugin=mysql_native_password
-    container_name: mysql
-    hostname: mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-    ports:
-      - 3306:3306
-    volumes:
-      - mysql_data:/var/lib/mysql
-      
   zookeeper:
     <<: *service-common
     user: root
@@ -113,7 +100,6 @@ services:
   #   command: "${KAFKA_HOME}/bin/connect-standalone.sh ${KAFKA_HOME}/config/connect-standalone.properties ${KAFKA_HOME}/config/inventory-mysql-kafka-connect.properties"
 
 volumes:
-  mysql_data:
   broker:
    
 networks:

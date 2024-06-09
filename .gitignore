@@ -3,3 +3,4 @@ data
 ip.txt
 /**/*.log
 /**/*.pyc
+services/metastore/metastore_mysql/*
