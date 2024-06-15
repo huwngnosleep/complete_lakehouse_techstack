@@ -4,3 +4,4 @@ ip.txt
 /**/*.log
 /**/*.pyc
 services/metastore/metastore_mysql/*
+services/airflow/dependencies

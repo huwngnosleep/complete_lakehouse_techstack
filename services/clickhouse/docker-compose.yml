@@ -74,38 +74,38 @@ services:
       - SHARD=3
       - HOSTNAME=clickhouse3
   
-  clickhouse4:
-    <<: *service-common
-    image: clickhouse/clickhouse-server:23.11.1.2711
-    container_name: clickhouse4
-    volumes:
-      - ./config/config.xml:/etc/clickhouse-server/config.xml
-      - clickhouse4_data:/var/lib/clickhouse/
-    environment:
-      - SHARD=1
-      - HOSTNAME=clickhouse4
+  # clickhouse4:
+  #   <<: *service-common
+  #   image: clickhouse/clickhouse-server:23.11.1.2711
+  #   container_name: clickhouse4
+  #   volumes:
+  #     - ./config/config.xml:/etc/clickhouse-server/config.xml
+  #     - clickhouse4_data:/var/lib/clickhouse/
+  #   environment:
+  #     - SHARD=1
+  #     - HOSTNAME=clickhouse4
 
-  clickhouse5:
-    <<: *service-common
-    image: clickhouse/clickhouse-server:23.11.1.2711
-    container_name: clickhouse5
-    volumes:
-      - ./config/config.xml:/etc/clickhouse-server/config.xml
-      - clickhouse5_data:/var/lib/clickhouse/
-    environment:
-      - SHARD=1
-      - HOSTNAME=clickhouse5
+  # clickhouse5:
+  #   <<: *service-common
+  #   image: clickhouse/clickhouse-server:23.11.1.2711
+  #   container_name: clickhouse5
+  #   volumes:
+  #     - ./config/config.xml:/etc/clickhouse-server/config.xml
+  #     - clickhouse5_data:/var/lib/clickhouse/
+  #   environment:
+  #     - SHARD=1
+  #     - HOSTNAME=clickhouse5
 
-  clickhouse6:
-    <<: *service-common
-    image: clickhouse/clickhouse-server:23.11.1.2711
-    container_name: clickhouse6
-    volumes:
-      - ./config/config.xml:/etc/clickhouse-server/config.xml
-      - clickhouse6_data:/var/lib/clickhouse/
-    environment:
-      - SHARD=2
-      - HOSTNAME=clickhouse6
+  # clickhouse6:
+  #   <<: *service-common
+  #   image: clickhouse/clickhouse-server:23.11.1.2711
+  #   container_name: clickhouse6
+  #   volumes:
+  #     - ./config/config.xml:/etc/clickhouse-server/config.xml
+  #     - clickhouse6_data:/var/lib/clickhouse/
+  #   environment:
+  #     - SHARD=2
+  #     - HOSTNAME=clickhouse6
 
 
 volumes:
