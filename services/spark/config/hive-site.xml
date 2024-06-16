@@ -30,6 +30,12 @@
         <description></description>
     </property>
 
+    <property>
+        <name>spark.sql.catalog.iceberg</name>
+        <value>org.apache.iceberg.spark.SparkCatalog</value>
+        <description></description>
+    </property>
+
     <!-- Set HDFS location for Hive user home directory -->
     <property>
         <name>hive.metastore.user.home.dir</name>
