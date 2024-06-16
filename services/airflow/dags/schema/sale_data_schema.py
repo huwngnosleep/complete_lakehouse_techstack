@@ -78,14 +78,14 @@ STAFFS = {
 ORDERS = {
     "name": "orders",
     "schema": [
-        {"name" "order_id", "type", "BIGINT"},
-        {"name" "customer_id", "type", "BIGINT"},
-        {"name" "order_status", "type", "BIGINT"},
-        {"name" "order_date", "type", "DATE"},
-        {"name" "required_date", "type", "DATE"},
-        {"name" "shipped_date", "type", "DATE"},
-        {"name" "store_id", "type", "BIGINT"},
-        {"name" "staff_id", "type", "BIGINT"}
+        {"name": "order_id", "type": "BIGINT"},
+        {"name": "customer_id", "type": "BIGINT"},
+        {"name": "order_status", "type": "BIGINT"},
+        {"name": "order_date", "type": "DATE"},
+        {"name": "required_date", "type": "DATE"},
+        {"name": "shipped_date", "type": "DATE"},
+        {"name": "store_id", "type": "BIGINT"},
+        {"name": "staff_id", "type": "BIGINT"}
     ],
     "table_type": "fact",
 }

@@ -96,12 +96,15 @@ with DAG(
         for table in ls_raw_tables:
             @dag.task(task_id=f"recreate_{table}")
             def recreate_warehouse_table(table):
+                warehouse_table_name = f"iceberg.warehouse.{table}"
                 cursor = hive.connect(host='spark-thriftserver', port=10000).cursor() 
                 cursor.execute(f"""
-                    DROP TABLE IF EXISTS warehouse.{table}
+                    DROP TABLE IF EXISTS {warehouse_table_name}
                 """)
                 cursor.execute(f"""
-                    CREATE TABLE IF NOT EXISTS warehouse.{table}
+                    CREATE TABLE IF NOT EXISTS {warehouse_table_name} (
+                        {",".join(list(map(lambda col: f'{col["name"]} {col["type"]}', ALL_TABLES[table]["schema"])))}
+                    )
                     USING iceberg
                     LOCATION '{BASE_PATH}{WAREHOUSE}/{table}/*.snappy.parquet'
                 """)
@@ -113,9 +116,10 @@ with DAG(
             @dag.task(task_id=f"insert_{table}")
             def insert_warehouse_table(table):
                 raw_table_name = f"default.{table}"
+                warehouse_table_name = f"iceberg.warehouse.{table}"
                 cursor = hive.connect(host='spark-thriftserver', port=10000).cursor() 
                 cursor.execute(f"""
-                    INSERT INTO warehouse.{table}
+                    INSERT INTO {warehouse_table_name}
                     SELECT * FROM {raw_table_name}
                 """)
             insert_warehouse_table(table)
