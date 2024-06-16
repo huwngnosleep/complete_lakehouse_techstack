@@ -124,4 +124,23 @@ with DAG(
                 """)
             insert_warehouse_table(table)
             
-    get_raw_data() >> load_staging() >> create_datawarehouse_table() >> insert_into_warehouse()
+    @task_group(group_id='aggregate_warehouse')        
+    def aggregate_warehouse():
+        # for table in ls_raw_tables:
+        @dag.task(task_id=f"aggregate_")
+        def aggregate_into_warehouse():
+            # raw_table_name = f"default.{table}"
+            # warehouse_table_name = f"iceberg.warehouse.{table}"
+            cursor = hive.connect(host='spark-thriftserver', port=10000).cursor() 
+            cursor.execute(f"""
+                CREATE OR REPLACE TABLE iceberg.aggr_warehouse.revenue_by_time
+                USING parquet
+                AS
+                select o.order_id, o.customer_id, o.order_status, o.order_date, o.store_id, o.staff_id,
+                oi.list_price * oi.quantity as revenue
+                from iceberg.warehouse.orders o
+                join iceberg.warehouse.order_items oi on o.order_id = oi.order_id
+            """)
+        aggregate_into_warehouse()
+            
+    get_raw_data() >> load_staging() >> create_datawarehouse_table() >> insert_into_warehouse() >> aggregate_warehouse()
