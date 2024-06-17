@@ -10,7 +10,7 @@ services:
     container_name: traffic_data_generator
     volumes:
       - ./code:/opt/code:ro
-    command: python3 /opt/code/generate_data.py
+    # command: python3 /opt/code/generate_data.py
   
 networks:
   default_net:

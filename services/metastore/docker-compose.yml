@@ -15,11 +15,11 @@ services:
     healthcheck:
       test: ["CMD", "mysqladmin" ,"ping", "--password=root"]
       interval: 1s
-      timeout: 10s
+      timeout: 20s
       retries: 5
     volumes:
       - ./metastore_mysql:/var/lib/mysql
-    restart: on-failure:3
+    restart: always
 
   metastore:
     networks:
@@ -40,7 +40,8 @@ services:
     volumes:
       - ./config/hive-site.xml:/opt/hive/conf/hive-site.xml
       - ./jars/mysql-connector-java-8.0.17.jar:/opt/hive/lib/mysql-connector-java-8.0.17.jar
-    restart: on-failure:3
+    restart: always
+    
   
 networks:
   default_net:
