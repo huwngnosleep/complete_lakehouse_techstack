@@ -4,7 +4,7 @@ x-service-common:
   &service-common
   networks:
     default_net:
-  restart: on-failure:3
+  restart: always
 
 services:
   clickhouse-keeper-1:
