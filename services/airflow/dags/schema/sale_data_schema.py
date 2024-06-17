@@ -80,6 +80,7 @@ ORDERS = {
     "schema": [
         {"name": "order_id", "type": "BIGINT"},
         {"name": "customer_id", "type": "BIGINT"},
+        # Order status: 1 = Pending; 2 = Processing; 3 = Rejected; 4 = Completed
         {"name": "order_status", "type": "BIGINT"},
         {"name": "order_date", "type": "DATE"},
         {"name": "required_date", "type": "DATE"},
