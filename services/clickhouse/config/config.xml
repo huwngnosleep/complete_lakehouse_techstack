@@ -7,28 +7,14 @@
     <mysql_port>9004</mysql_port>
 
     <remote_servers>
-        <datahub>
+        <clickhouse_cluster>
             <shard>
                 <replica>
                     <host>clickhouse1</host>
                     <port>9000</port>
                 </replica>
                 <replica>
-                    <host>clickhouse4</host>
-                    <port>9000</port>
-                </replica>
-                <replica>
-                    <host>clickhouse5</host>
-                    <port>9000</port>
-                </replica>
-            </shard>
-            <shard>
-                <replica>
                     <host>clickhouse2</host>
-                    <port>9000</port>
-                </replica>
-                <replica>
-                    <host>clickhouse6</host>
                     <port>9000</port>
                 </replica>
             </shard>
@@ -38,7 +24,7 @@
                     <port>9000</port>
                 </replica>
             </shard>
-        </datahub>
+        </clickhouse_cluster>
     </remote_servers>
 
     <zookeeper>

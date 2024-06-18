@@ -12,7 +12,18 @@ REVENUE_BY_TIME = {
         (revenue - discount_revenue) as net_revenue
         FROM iceberg.warehouse.orders o
         JOIN iceberg.warehouse.order_items oi ON o.order_id = oi.order_id
-    """
+    """,
+    "schema": [
+        {"name": "order_id", "type": "BIGINT"}, 
+        {"name": "customer_id", "type": "BIGINT"}, 
+        {"name": "store_id", "type": "BIGINT"}, 
+        {"name": "staff_id", "type": "BIGINT"}, 
+        {"name": "order_status", "type": "BIGINT"}, 
+        {"name": "order_date", "type": "DATE"}, 
+        {"name": "revenue", "type": "DOUBLE"}, 
+        {"name": "discount_revenue", "type": "DOUBLE"}, 
+        {"name": "net_revenue", "type": "DOUBLE"}
+    ]
 }
 
 SALE_AGGREGATE_TABLES = {

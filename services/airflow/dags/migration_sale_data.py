@@ -11,6 +11,8 @@ from airflow.decorators import dag, task_group, task
 from schema.sale_data_schema import ALL_TABLES
 from schema.sale_aggregate_schema import SALE_AGGREGATE_TABLES
 from pyhive.exc import Error
+from clickhouse_driver import Client
+
 DAG_ID = "migration_sale_data"
 DAG_SCHEDULE = "*/10 * * * *"
 with DAG(
@@ -133,6 +135,39 @@ with DAG(
                 cursor = hive.connect(host='spark-thriftserver', port=10000).cursor() 
                 cursor.execute(f"DROP TABLE IF EXISTS iceberg.aggr_warehouse.{table}")
                 cursor.execute(SALE_AGGREGATE_TABLES[table]["create_table_command"])
+                hdfs_client = pyhdfs.HdfsClient(hosts='namenode:9870')
+                hdfs_client.delete(f"/user/hive/warehouse/aggr_warehouse.db/{table}_parquet", recursive=True)
+                cursor.execute(f"""
+                    DROP TABLE IF EXISTS spark_catalog.aggr_warehouse.{table}_parquet
+                """)
+                cursor.execute(f"""
+                    CREATE TABLE spark_catalog.aggr_warehouse.{table}_parquet
+                    USING parquet
+                    AS
+                    SELECT * FROM iceberg.aggr_warehouse.{table}
+                """)
             aggregate_into_warehouse()
             
-    get_raw_data() >> load_staging() >> create_datawarehouse_table() >> insert_into_warehouse() >> aggregate_warehouse()
+    @task_group(group_id='load_to_clickhouse')        
+    def load_to_clickhouse():
+        for table in SALE_AGGREGATE_TABLES:
+            @dag.task(task_id=f"load_to_clickhouse_{table}")
+            def load_to_clickhouse():
+                clickhouse_client = Client('clickhouse1', database="default")
+                clickhouse_client.execute(f"""
+                    CREATE OR REPLACE TABLE {table}_hdfs
+                    ENGINE=HDFS('hdfs://namenode:9000/user/hive/warehouse/aggr_warehouse.db/{table}_parquet/*.snappy.parquet', 'Parquet')                          
+                """)
+                clickhouse_client.execute(f"""
+                    CREATE OR REPLACE TABLE {table} ON CLUSTER clickhouse_cluster
+                    AS {table}_hdfs
+                    ENGINE=MergeTree()
+                    ORDER BY (date(order_date))    
+                    SETTINGS allow_nullable_key=true                      
+                """)
+                clickhouse_client.execute(f"""
+                    INSERT INTO {table} SELECT * FROM {table}_hdfs
+                """)
+            load_to_clickhouse()
+            
+    get_raw_data() >> load_staging() >> create_datawarehouse_table() >> insert_into_warehouse() >> aggregate_warehouse() >> load_to_clickhouse()

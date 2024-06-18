@@ -4,3 +4,4 @@ PyHDFS==0.3.1
 PyHive==0.7.0
 thrift==0.20.0
 thrift_sasl==0.4.3
+clickhouse_driver==0.2.8
