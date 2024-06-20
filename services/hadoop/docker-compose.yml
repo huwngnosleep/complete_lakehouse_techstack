@@ -10,6 +10,12 @@ x-hdfs-common:
   volumes:
     - ./config:/opt/hadoop/etc/hadoop:ro
   restart: on-failure:3
+  deploy:
+    resources:
+      reservations:
+        memory: 128M # Set memory reservation (minimum guaranteed)
+      limits:
+        memory: 256M
 
 
 x-datanode-common:
@@ -56,21 +62,21 @@ services:
       - ./data/datanode3:/data1
       - ./config:/opt/hadoop/etc/hadoop:ro
 
-  # datanode4:
-  #   <<: *datanode-common
-  #   container_name: datanode4
-  #   hostname: datanode4
-  #   volumes:
-  #     - ./data/datanode4:/data1
-  #     - ./config:/opt/hadoop/etc/hadoop:ro
+  datanode4:
+    <<: *datanode-common
+    container_name: datanode4
+    hostname: datanode4
+    volumes:
+      - ./data/datanode4:/data1
+      - ./config:/opt/hadoop/etc/hadoop:ro
 
-  # datanode5:
-  #   <<: *datanode-common
-  #   container_name: datanode5
-  #   hostname: datanode5
-  #   volumes:
-  #     - ./data/datanode5:/data1
-  #     - ./config:/opt/hadoop/etc/hadoop:ro
+  datanode5:
+    <<: *datanode-common
+    container_name: datanode5
+    hostname: datanode5
+    volumes:
+      - ./data/datanode5:/data1
+      - ./config:/opt/hadoop/etc/hadoop:ro
 
 volumes:
   namenode_data:
