@@ -7,9 +7,9 @@ x-service-common:
   deploy:
     resources:
       reservations:
-        memory: 128M # Set memory reservation (minimum guaranteed)
+        memory: 1G # Set memory reservation (minimum guaranteed)
       limits:
-        memory: 512M
+        memory: 1G
   restart: always
 
 services:
