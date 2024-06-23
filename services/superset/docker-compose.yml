@@ -1,0 +1,10 @@
+version: "3.8"
+
+services:
+  superset:
+    build: .
+    container_name: superset
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      SUPERSET_SECRET_KEY: your_secret_key_here 
