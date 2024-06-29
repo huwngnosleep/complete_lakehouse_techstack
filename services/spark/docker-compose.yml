@@ -83,7 +83,6 @@ services:
   
 volumes:
   spark_home:
-  hive_metastore_mysql:
    
 networks:
   default_net:

@@ -75,29 +75,30 @@ services:
       timeout: 10s
       retries: 5
 
-  # kafka-connect:
-  #   <<: *service-common
-  #   image: docker.io/bitnami/kafka:3.6
-  #   ports:
-  #     - "8083:8083"
-  #   hostname: kafka-connect
-  #   container_name: kafka-connect
-  #   depends_on:
-  #     kafka:
-  #       condition: service_healthy
-  #   healthcheck:
-  #     test: ["CMD-SHELL", "kafka-topics.sh --list --bootstrap-server kafka:9092"]
-  #     interval: 30s
-  #     timeout: 10s
-  #     retries: 5
-  #   environment:
-  #     - KAFKA_HOME=${KAFKA_HOME}
-  #   volumes:
-  #     - ./config/inventory-mysql-kafka-connect.properties:${KAFKA_HOME}/config/inventory-mysql-kafka-connect.properties:ro
-  #     - ./config/server.properties:${KAFKA_HOME}/config/server.properties:ro
-  #     - ./config/connect-standalone.properties:${KAFKA_HOME}/config/connect-standalone.properties:ro
-  #     - ./jars/debezium-connector-mysql:${KAFKA_HOME}/libs/debezium-connector-mysql
-  #   command: "${KAFKA_HOME}/bin/connect-standalone.sh ${KAFKA_HOME}/config/connect-standalone.properties ${KAFKA_HOME}/config/inventory-mysql-kafka-connect.properties"
+  kafka-connect:
+    <<: *service-common
+    image: docker.io/bitnami/kafka:3.6
+    ports:
+      - "8083:8083"
+    hostname: kafka-connect
+    container_name: kafka-connect
+    depends_on:
+      kafka:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-topics.sh --list --bootstrap-server kafka:9092"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    environment:
+      - KAFKA_HOME=${KAFKA_HOME}
+    volumes:
+      - ./config/bikestore_order_connector.properties:${KAFKA_HOME}/config/bikestore_order_connector.properties:ro
+      - ./config/server.properties:${KAFKA_HOME}/config/server.properties:ro
+      - ./config/connect-standalone.properties:${KAFKA_HOME}/config/connect-standalone.properties:ro
+      - ./jars/debezium-connector-mysql:${KAFKA_HOME}/libs/debezium-connector-mysql
+      - ./jars/debezium-connector-sqlserver:${KAFKA_HOME}/libs/debezium-connector-sqlserver
+    command: "${KAFKA_HOME}/bin/connect-standalone.sh ${KAFKA_HOME}/config/connect-standalone.properties ${KAFKA_HOME}/config/bikestore_order_connector.properties"
 
 volumes:
   broker:

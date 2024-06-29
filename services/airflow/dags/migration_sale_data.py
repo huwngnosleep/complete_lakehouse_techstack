@@ -44,15 +44,15 @@ with DAG(
                 dest_file_name = f"{table}_01.snappy.parquet"
                 mssql_conn = pymssql.connect('mssql:1433', 'sa', 'root@@@123', "BikeStores")
                 hdfs_client = pyhdfs.HdfsClient(hosts='namenode:9870')
-                raw_data = pandas.read_sql(f"SELECT * FROM {table};", mssql_conn)
+                
+                # extract raw data to parquet files
+                extract_query = f"SELECT * FROM {table};"
+                raw_data = pandas.read_sql(extract_query, mssql_conn)
+                print(extract_query)
                 temp_file = NamedTemporaryFile()
                 raw_data.to_parquet(temp_file.name)
-                # clean_raw_dir = subprocess.run(f"/hadoop/bin/hdfs dfs -fs hdfs://namenode:9000 -rm -r -f {hdfs_raw_dir}"
-                #                , shell=True
-                #                , stdout=subprocess.PIPE
-                #                , stderr=subprocess.PIPE)
-                # print("clean_raw_dir OUTPUT:", clean_raw_dir.stdout)
-                # print("clean_raw_dir ERROR:", clean_raw_dir.stderr)
+                
+                # upload to HDFS
                 hdfs_client.delete(hdfs_raw_dir, recursive=True)
                 if not hdfs_client.exists(hdfs_raw_dir):
                     hdfs_client.mkdirs(hdfs_raw_dir)
@@ -62,17 +62,6 @@ with DAG(
                     overwrite=True,
                     async_=True
                 )
-                # hdfs_client.create(
-                #     data=temp_file.name, 
-                #     path=hdfs_raw_dir + dest_file_name,
-                #     overwrite=True,
-                # )
-                # upload_to_hdfs = subprocess.run(f"/hadoop/bin/hdfs dfs -fs hdfs://namenode:9000 -put -f {temp_file.name} {hdfs_raw_dir + dest_file_name}"
-                #                , shell=True
-                #                , stdout=subprocess.PIPE
-                #                , stderr=subprocess.PIPE)
-                # print("upload_to_hdfs OUTPUT:", upload_to_hdfs.stdout)
-                # print("upload_to_hdfs ERROR:", upload_to_hdfs.stderr)
                 mssql_conn.close()
             extract_raw(table)
     

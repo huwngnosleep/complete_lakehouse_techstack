@@ -43,6 +43,7 @@ def generate_date_in_range(start_date, end_date):
     faker = Faker()
     return faker.date_between_dates(date_start=start_date, date_end=end_date)
 
+
 start_date = datetime(2018, 1, 1)  # Adjust these as needed
 end_date = datetime(2024, 6, 23)  # Today's date for example
 
