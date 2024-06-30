@@ -13,12 +13,14 @@ USE BikeStores;
 -- create tables
 CREATE TABLE categories (
 	category_id INT IDENTITY (1, 1) PRIMARY KEY,
-	category_name VARCHAR (255) NOT NULL
+	category_name VARCHAR (255) NOT NULL,
+	updated_at DATETIME DEFAULT GETDATE(),
 );
 
 CREATE TABLE brands (
 	brand_id INT IDENTITY (1, 1) PRIMARY KEY,
-	brand_name VARCHAR (255) NOT NULL
+	brand_name VARCHAR (255) NOT NULL,
+	updated_at DATETIME DEFAULT GETDATE(),
 );
 
 CREATE TABLE products (
@@ -28,6 +30,7 @@ CREATE TABLE products (
 	category_id INT NOT NULL,
 	model_year SMALLINT NOT NULL,
 	list_price DECIMAL (10, 2) NOT NULL,
+	updated_at DATETIME DEFAULT GETDATE(),
 	FOREIGN KEY (category_id) REFERENCES categories (category_id) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY (brand_id) REFERENCES brands (brand_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -41,7 +44,8 @@ CREATE TABLE customers (
 	street VARCHAR (255),
 	city VARCHAR (50),
 	state VARCHAR (25),
-	zip_code VARCHAR (5)
+	zip_code VARCHAR (5),
+	updated_at DATETIME DEFAULT GETDATE(),
 );
 
 CREATE TABLE stores (
@@ -52,7 +56,8 @@ CREATE TABLE stores (
 	street VARCHAR (255),
 	city VARCHAR (255),
 	state VARCHAR (10),
-	zip_code VARCHAR (5)
+	zip_code VARCHAR (5),
+	updated_at DATETIME DEFAULT GETDATE(),
 );
 
 CREATE TABLE staffs (
@@ -64,6 +69,7 @@ CREATE TABLE staffs (
 	active tinyint NOT NULL,
 	store_id INT NOT NULL,
 	manager_id INT,
+	updated_at DATETIME DEFAULT GETDATE(),
 	FOREIGN KEY (store_id) REFERENCES stores (store_id) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY (manager_id) REFERENCES staffs (staff_id) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
@@ -78,6 +84,7 @@ CREATE TABLE orders (
 	shipped_date DATE,
 	store_id INT NOT NULL,
 	staff_id INT NOT NULL,
+	updated_at DATETIME DEFAULT GETDATE(),
 	FOREIGN KEY (customer_id) REFERENCES customers (customer_id) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY (store_id) REFERENCES stores (store_id) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY (staff_id) REFERENCES staffs (staff_id) ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -90,6 +97,7 @@ CREATE TABLE order_items (
 	quantity INT NOT NULL,
 	list_price DECIMAL (10, 2) NOT NULL,
 	discount DECIMAL (4, 2) NOT NULL DEFAULT 0,
+	updated_at DATETIME DEFAULT GETDATE(),
 	PRIMARY KEY (order_id, item_id),
 	FOREIGN KEY (order_id) REFERENCES orders (order_id) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY (product_id) REFERENCES products (product_id) ON DELETE CASCADE ON UPDATE CASCADE
@@ -99,6 +107,7 @@ CREATE TABLE stocks (
 	store_id INT,
 	product_id INT,
 	quantity INT,
+	updated_at DATETIME DEFAULT GETDATE(),
 	PRIMARY KEY (store_id, product_id),
 	FOREIGN KEY (store_id) REFERENCES stores (store_id) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY (product_id) REFERENCES products (product_id) ON DELETE CASCADE ON UPDATE CASCADE

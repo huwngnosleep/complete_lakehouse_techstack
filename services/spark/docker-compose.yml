@@ -10,7 +10,7 @@ x-service-common:
     - SPARK_MASTER=spark://spark-master:7077
     - SPARK_HOME=${SPARK_HOME}
   volumes:
-    - ./jars/iceberg-spark-runtime-3.4_2.12-1.4.3.jar:${SPARK_HOME}/jars/iceberg-spark-runtime-3.4_2.12-1.4.3.jar:ro
+    - ./jars/iceberg-spark-runtime-3.5_2.12-1.5.2.jar:${SPARK_HOME}/jars/iceberg-spark-runtime-3.5_2.12-1.5.2.jar:ro
     - ./config:${SPARK_HOME}/conf/:ro
     - ./code:${SPARK_HOME}/code:ro
     - ./scripts:${SPARK_HOME}/scripts:ro

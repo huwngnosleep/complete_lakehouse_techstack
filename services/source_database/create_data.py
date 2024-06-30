@@ -11,12 +11,13 @@ conn = pymssql.connect('localhost:1433', 'sa', 'root@@@123', "BikeStores")
 
 cursor = conn.cursor(as_dict=True)
 MAX_PRODUCT_PER_ORDER = 10
+MAX_QUANTITY_PER_ORDER_ITEM = 5
 MAX_TIME_DELTA = 5
 num_products = random.randint(1, MAX_PRODUCT_PER_ORDER)
 
 # get random products
-cursor.execute('SELECT product_id FROM products')
-products = list(map(lambda row: row["product_id"], cursor))
+cursor.execute('SELECT product_id, list_price FROM products')
+products = list(map(lambda row: {"product_id": row["product_id"], "list_price": row["list_price"]}, cursor))
 random_products = random.sample(products, num_products)
 
 # get random customer
@@ -66,5 +67,28 @@ insert_query = """
 
 cursor.execute(insert_query, new_order)
 conn.commit()
+print("NEW ORDER:", new_order)
+cursor.execute(f"""
+    SELECT * FROM orders WHERE 1=1 
+        AND customer_id = {random_customer}
+        AND order_status = {random_order_status}
+        AND store_id = {random_store}
+        AND staff_id = {random_staff}
+""")
+new_order = cursor.fetchone()
+new_order_id = new_order["order_id"]
+new_order_items = []
+for i, product in enumerate(random_products):
+    random_product_id = product["product_id"]
+    list_price = product["list_price"]
+    new_order_item = (new_order_id, i + 1, random_product_id, random.randint(1, MAX_QUANTITY_PER_ORDER_ITEM), list_price, 0)
+    
+    insert_query = """
+        INSERT INTO order_items(order_id, item_id, product_id, quantity, list_price, discount)
+        VALUES(%s, %s, %s, %s, %s, %s)
+    """
+    cursor.execute(insert_query, new_order_item)
+    conn.commit()
+    print("NEW ORDER ITEM", i + 1, new_order_item)
 cursor.close()
 conn.close()
