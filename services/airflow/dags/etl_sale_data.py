@@ -25,8 +25,6 @@ def get_latest_dag_execution_date(dag_id):
             DagRun.dag_id == dag_id, 
             DagRun.state == State.SUCCESS
         ).order_by(DagRun.execution_date.desc())
-        print(latest_run)
-        # print("EXECUTION DATE", session.query(DagRun).filter(DagRun.dag_id == dag_id).order_by(DagRun.end_date.desc()))
         return latest_run.first().execution_date if latest_run else None
 
 DAG_ID = "etl_sale_data"
