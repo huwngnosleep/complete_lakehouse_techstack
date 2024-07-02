@@ -31,7 +31,6 @@ DAG_ID = "etl_sale_data"
 DAG_SCHEDULE = "* * * * *"
 DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 ext_from = get_latest_dag_execution_date(dag_id=DAG_ID).strftime(DATETIME_FORMAT)
-# ext_from = datetime.strptime(get_latest_dag_execution_date(dag_id=DAG_ID), DATETIME_FORMAT)    
 ext_to = datetime.now().strftime(DATETIME_FORMAT)
 with DAG(
     DAG_ID,
