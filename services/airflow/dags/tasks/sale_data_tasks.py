@@ -52,7 +52,9 @@ def create_staging_table(table, BASE_PATH, RAW):
         DROP TABLE IF EXISTS {raw_table_name}
     """)
     cursor.execute(f"""
-        CREATE TABLE IF NOT EXISTS {raw_table_name}
+        CREATE TABLE IF NOT EXISTS {raw_table_name} (
+            {",".join(list(map(lambda col: f'{col["name"]} {col["type"]}', ALL_TABLES[table]["schema"])))}   
+        )
         USING parquet
         LOCATION '{BASE_PATH}{RAW}/{table}/*.snappy.parquet'
     """)
