@@ -86,10 +86,6 @@ def insert_warehouse_table(table):
     if has_staging_data == 0:
         print("STAGING HAS NO DATA, SKIPPING...")
     else:
-        # cursor.execute(f"""
-        #     INSERT INTO {warehouse_table_name}
-        #     SELECT * FROM {raw_table_name}
-        # """)
         cursor.execute(f"""
             MERGE INTO {warehouse_table_name} t   
             USING {raw_table_name} s
@@ -119,7 +115,7 @@ def aggregate_into_warehouse(table):
     """)
     
 
-def load_to_clickhouse(table):
+def load_to_clickhouse(table, order_key):
     clickhouse_client = Client('clickhouse1', database="default")
     clickhouse_client.execute(f"""
         CREATE OR REPLACE TABLE {table}_hdfs
@@ -129,7 +125,7 @@ def load_to_clickhouse(table):
         CREATE OR REPLACE TABLE {table} ON CLUSTER clickhouse_cluster
         AS {table}_hdfs
         ENGINE=MergeTree()
-        ORDER BY (date(order_date))    
+        ORDER BY ({order_key})    
         SETTINGS allow_nullable_key=true                      
     """)
     clickhouse_client.execute(f"""

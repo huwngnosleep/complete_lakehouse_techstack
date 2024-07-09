@@ -99,7 +99,7 @@ with DAG(
             load_to_clickhouse_task = PythonOperator(
                 task_id=f"load_clickhouse_{table}",
                 python_callable=load_to_clickhouse,
-                op_args=[table]
+                op_args=[table, SALE_AGGREGATE_TABLES[table]["order_key"]]
             )
             load_to_clickhouse_task
             
