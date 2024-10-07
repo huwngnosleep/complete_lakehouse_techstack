@@ -6,3 +6,4 @@ ip.txt
 services/metastore/metastore_mysql/*
 services/airflow/dependencies
 mysql
+dependencies/*
