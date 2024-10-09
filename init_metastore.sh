@@ -1,0 +1,1 @@
+docker-compose --env-file=.env_init -f ./services/metastore/docker-compose.yml up

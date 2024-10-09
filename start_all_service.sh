@@ -1,18 +1,19 @@
 #!/bin/bash
-# initilized=0
-# if [ -f "first_run" ]; then
-#     echo "File exists. Reading content:"
-#     first_run=$(cat "first_run")
-#     if [[ $first_run == "hello" ]]; then
-#         initilized=1
-#         echo Initialize completed, docker upping now...
-#     else
-#         echo First run, initalizing...
-#     fi
-# else
-#     echo first_run = true > first_run
-#     echo "File 'first_run' does not exist."
-# fi
+initilized=0
+if [ -f "initialized_file" ]; then
+    echo "File exists. Reading content:"
+    if [[ $(cat "initialized_file") == "hello" ]]; then
+        initilized=1
+        echo Initialize completed, docker upping now...
+    else
+        echo First run, initalizing...
+    fi
+else
+    echo hello > initialized_file
+    echo "File 'initialized_file' does not exist."
+    echo initializing metastore...
+    bash ./init_metastore.sh
+fi
 
 # Use the ls command to get a list of files in the current directory
 dirs=$(ls ./services)
