@@ -44,3 +44,6 @@ After finishing all the above steps, change IS_RESUME back to True then rerun st
 - Spark Master: localhost:7077 
 - Spark Thrift: localhost:10000
 - MSSQL Server: localhost:1433 - user: root - password: root@@@123 
+- Kafka:
+  - Kafka UI: http://localhost:9090
+  - Kafka broker: localhost:9092

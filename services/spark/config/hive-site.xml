@@ -17,16 +17,16 @@
     </property>
 
     <!-- Set HDFS location for Hive scratch directory -->
-    <property>
+    <!-- <property>
         <name>hive.exec.scratchdir</name>
         <value>/tmp/hive</value>
         <description>Scratch space for Hive jobs</description>
-    </property>
+    </property> -->
 
     <!-- Spark configurations -->
-    <property>
+    <!-- <property>
         <name>spark.sql.catalogImplementation</name>
-        <value>hive</value>
+        <value>iceberg</value>
         <description></description>
     </property>
 
@@ -34,7 +34,7 @@
         <name>spark.sql.catalog.iceberg</name>
         <value>org.apache.iceberg.spark.SparkCatalog</value>
         <description></description>
-    </property>
+    </property> -->
 
     <!-- Set HDFS location for Hive user home directory -->
     <property>

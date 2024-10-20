@@ -3,6 +3,7 @@ version: '3.7'
 x-service-common:
   &service-common
   image: spark:3.5.0
+  user: root
   networks:
     default_net:
   restart: on-failure:3
@@ -17,30 +18,28 @@ x-service-common:
     - ./.env:${SPARK_HOME}/.env:ro
     
 services:
-  # traffic_data_stream:
-  #   <<: *service-common
-  #   user: root
-  #   container_name: traffic_data_stream
-  #   depends_on:
-  #     spark-master:
-  #       condition: service_healthy
-  #   command: "${SPARK_HOME}/bin/spark-submit 
-  #     --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0 \ 
-  #     --master spark://spark-master:7077 \
-  #     --properties-file $SPARK_HOME/conf/traffic_data_stream.properties \
-  #     ${SPARK_HOME}/code/process_traffic_data.py"
+  kafka-data-stream:
+    <<: *service-common
+    container_name: kafka-data-stream
+    depends_on:
+      spark-master:
+        condition: service_healthy
+    command: "${SPARK_HOME}/bin/spark-submit 
+      --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0 \ 
+      --master spark://spark-master:7077 \
+      --properties-file $SPARK_HOME/conf/kafka_data_stream.properties \
+      ${SPARK_HOME}/code/process_kafka_data.py"
 
   spark-master:
     # root user to avoid permission deny in $SPARK_HOME, need improving later
     <<: *service-common
-    user: root 
     container_name: spark-master
     ports:
       - "${SPARK_MASTER_WEB_UI_PORT}:8080"
       - "${SPARK_MASTER_PORT}:7077"
     healthcheck:
       test: ["CMD", "curl", "-s", "http://localhost:8080/"]
-      interval: 1s
+      interval: 1s  
       timeout: 10s
       retries: 5
     command: bash -c "
