@@ -38,6 +38,33 @@ services:
       - ./conf/mysql/my.cnf:/etc/my.cnf
     restart: always    
 
+  nginx:
+    image: nginx:1.27.2
+    container_name: nginx
+    networks:
+      default_net:
+    hostname: nginx
+    volumes:
+    # - ./templates:/etc/nginx/templates
+      - ./nginx_logs:/var/log/nginx
+    ports:
+    - "8183:80"
+    environment:
+    # - NGINX_HOST=foobar.com
+    - NGINX_PORT=80
+  
+  logstash:
+    networks:
+      default_net:
+    image: logstash:8.15.3
+    ports:
+      - "8342:8090"
+    container_name: logstash
+    hostname: logstashs
+    volumes:
+      - ./nginx_logs:/var/log/nginx
+      - ./conf/logstash_pipeline/nginx_http.conf:/usr/share/logstash/pipeline/nginx_http.conf
+
 volumes:
   mssql_data:  
    

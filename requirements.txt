@@ -1,2 +1,3 @@
 PyMySQL==1.1.1
 Faker==30.4.0
+kafka-python==2.0.2

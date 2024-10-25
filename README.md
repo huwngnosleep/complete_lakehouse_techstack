@@ -15,7 +15,7 @@ follow Data Lake-House architecture, there are main interfaces of this platform:
 # First run:
 0. Install external dependencies:
 - Install JDK 23: https://download.oracle.com/java/23/latest/jdk-23_linux-aarch64_bin.tar.gz
-- Install Hadoop 3.4.0: https://download.oracle.com/java/23/latest/jdk-23_linux-aarch64_bin.tar.gz
+- Install Hadoop 3.4.0: https://dlcdn.apache.org/hadoop/common/hadoop-3.4.0/hadoop-3.4.0.tar.gz
 
 Extract downloaded files to `/services/airflow/dependencies` and extract them
  

@@ -30,6 +30,18 @@ services:
       --properties-file $SPARK_HOME/conf/kafka_data_stream.properties \
       ${SPARK_HOME}/code/process_kafka_data.py"
 
+  click-data-enrichment:
+    <<: *service-common
+    container_name: click-data-enrichment
+    depends_on:
+      spark-master:
+        condition: service_healthy
+    command: "${SPARK_HOME}/bin/spark-submit 
+      --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0 \ 
+      --master spark://spark-master:7077 \
+      --properties-file $SPARK_HOME/conf/kafka_data_stream.properties \
+      ${SPARK_HOME}/code/click_data_enrich.py"
+
   spark-master:
     # root user to avoid permission deny in $SPARK_HOME, need improving later
     <<: *service-common

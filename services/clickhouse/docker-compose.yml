@@ -47,7 +47,8 @@ services:
   clickhouse1:
     <<: *service-common
     container_name: clickhouse1
-    image: clickhouse/clickhouse-server:23.11.1.2711
+    # image: clickhouse/clickhouse-server:23.11.1.2711
+    image: clickhouse/clickhouse-server:latest
     environment:
       - SHARD=1
       - HOSTNAME=clickhouse1
@@ -60,7 +61,8 @@ services:
 
   clickhouse2:
     <<: *service-common
-    image: clickhouse/clickhouse-server:23.11.1.2711
+    # image: clickhouse/clickhouse-server:23.11.1.2711
+    image: clickhouse/clickhouse-server:latest
     container_name: clickhouse2
     volumes:
       - ./config/config.xml:/etc/clickhouse-server/config.xml
@@ -71,7 +73,8 @@ services:
 
   clickhouse3:
     <<: *service-common
-    image: clickhouse/clickhouse-server:23.11.1.2711
+    # image: clickhouse/clickhouse-server:23.11.1.2711
+    image: clickhouse/clickhouse-server:latest
     container_name: clickhouse3
     volumes:
       - ./config/config.xml:/etc/clickhouse-server/config.xml
