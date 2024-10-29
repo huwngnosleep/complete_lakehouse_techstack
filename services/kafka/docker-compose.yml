@@ -5,6 +5,12 @@ x-service-common:
   networks:
     default_net:
   restart: on-failure:3
+  deploy:
+    resources:
+      reservations:
+        memory: 1G 
+      limits:
+        memory: 1G
 
 services:
   zookeeper:

@@ -1,7 +1,17 @@
 version: '3.8'
 
+x-service-common:
+  &service-common
+  deploy:
+    resources:
+      reservations:
+        memory: 1G
+      limits:
+        memory: 1G
+
 services:
   mssql:
+    <<: *service-common
     networks:
       default_net:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -16,6 +26,7 @@ services:
       - "1433:1433"
 
   mysql:
+    <<: *service-common
     networks:
       default_net:
     image: mysql:9.0
@@ -39,6 +50,7 @@ services:
     restart: always    
 
   nginx:
+    <<: *service-common
     image: nginx:1.27.2
     container_name: nginx
     networks:
@@ -55,6 +67,7 @@ services:
     restart: always    
   
   logstash:
+    <<: *service-common
     networks:
       default_net:
     image: logstash:8.15.3

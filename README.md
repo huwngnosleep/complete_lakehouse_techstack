@@ -37,6 +37,7 @@ After finishing all the above steps, change IS_RESUME back to True then rerun st
 
 5. Check UI page of running services
 - Apache Airflow: localhost:8080
+- Apache Superset UI: localhost:8088
 - Spark Master UI : localhost:8082
 - Spark Thrift UI: localhost:4040
 

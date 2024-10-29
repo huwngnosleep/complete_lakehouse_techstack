@@ -2,6 +2,12 @@ version: '3.7'
 
 x-service-common:
   &service-common
+  deploy:
+    resources:
+      reservations:
+        memory: 1G
+      limits:
+        memory: 1G
   image: spark:3.5.0
   user: root
   networks:
