@@ -41,6 +41,7 @@ After finishing all the above steps, change IS_RESUME back to True then rerun st
 - Spark Thrift UI: localhost:4040
 
 6. Services ports for TCP connections
+- Nginx for http logging data source: localhost:8183
 - Spark Master: localhost:7077 
 - Spark Thrift: localhost:10000
 - MSSQL Server: localhost:1433 - user: root - password: root@@@123 

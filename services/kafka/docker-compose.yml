@@ -75,6 +75,26 @@ services:
       timeout: 10s
       retries: 5
 
+  kafka_broker_002:
+    <<: *service-common
+    image: docker.io/bitnami/kafka:3.6
+    container_name: kafka_broker_002  
+    hostname: kafka_broker_002
+    environment:
+      - KAFKA_HOME=${KAFKA_HOME}
+    user: root
+    volumes:
+      - ./data/kafka_broker_002_logs:/etc/logs
+      - ./config/server_002.properties:${KAFKA_HOME}/config/server.properties:ro
+    command: ${KAFKA_HOME}/bin/kafka-server-start.sh ${KAFKA_HOME}/config/server.properties
+    restart: always
+
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-topics.sh --list --bootstrap-server kafka_broker_002:9092"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
   kafka-connect:
     <<: *service-common
     image: docker.io/bitnami/kafka:3.6

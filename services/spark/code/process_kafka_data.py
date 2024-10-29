@@ -10,13 +10,13 @@ ivy2_repository = "/home/spark/"
 
 # Create a Spark session
 spark = SparkSession.builder \
-    .appName("KafkaStreamReader") \
+    .appName("CDC") \
     .config("spark.jars.ivy", ivy2_repository) \
     .enableHiveSupport() \
     .getOrCreate()
 
 # Read data from Kafka
-KAFKA_BOOTSTRAP_SERVERS = "kafka:9092"
+KAFKA_BOOTSTRAP_SERVERS = "kafka:9092,kafka_broker_001:9092,kafka_broker_002:9092"
 df = (
     spark
     .readStream

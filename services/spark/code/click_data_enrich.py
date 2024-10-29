@@ -4,23 +4,21 @@ from pyspark.sql.types import StructType, StructField, StringType, LongType, Tim
 from pyspark.sql.functions import *
 
 # Define the Kafka topic to read from
+KAFKA_BOOTSTRAP_SERVERS = "kafka:9092,kafka_broker_001:9092,kafka_broker_002:9092"
 SOURCE_KAFKA_TOPIC = "test"
-# SINK_KAFKA_TOPIC = "customers_distinct"
-ivy2_repository = "/home/spark/"
+SINK_KAFKA_TOPIC = "user_click_fact"
 
 # Create a Spark session
+IVY2_REPOSITORY = "/home/spark/"
 spark = SparkSession.builder \
-    .appName("KafkaStreamReader") \
-    .config("spark.jars.ivy", ivy2_repository) \
+    .appName("ClickDataEnrichment") \
+    .config("spark.jars.ivy", IVY2_REPOSITORY) \
     .config("spark.sql.defaultCatalog", "iceberg") \
     .config("spark.sql.catalog.iceberg", "org.apache.iceberg.spark.SparkCatalog") \
     .enableHiveSupport() \
     .getOrCreate()
 
-print("current_catalog", spark.catalog.currentCatalog())
 # Read data from Kafka
-
-KAFKA_BOOTSTRAP_SERVERS = "kafka:9092"
 df = (
     spark
     .readStream
@@ -48,10 +46,38 @@ df = spark.sql("""
     from clicks
     )
     select 
-        *
+        *,
+        cast(clicks_processed.customerNumber as string) as key,
+        cast(concat(
+            clicks_processed.customerNumber,
+            ',',
+            customer.customerName,
+            ',',
+            customer.phone,
+            ',',
+            customer.addressLine1,
+            ',',
+            customer.addressLine2,
+            ',',
+            customer.city,
+            ',',
+            customer.state,
+            ',',
+            customer.country,
+            ',',
+            clicks_processed.ip_address,
+            ',',
+            clicks_processed.col2,
+            ',',
+            clicks_processed.timestamp,
+            ',',
+            clicks_processed.http_info,
+            ',',
+            clicks_processed.method
+        ) as binary) as value
     from clicks_processed
     left JOIN classicmodels_warehouse.customers customer on clicks_processed.customerNumber = customer.customerNumber
-    """)
+""")
 
 
 # Save DataFrame as a Parquet table
@@ -64,18 +90,20 @@ df = spark.sql("""
 #     .start()
 # streaming_query.awaitTermination()
 
-# kafka_sink = df.writeStream \
-#     .format("kafka") \
-#     .option("kafka.bootstrap.servers", KAFKA_BOOTSTRAP_SERVERS) \
-#     .option("topic", SINK_KAFKA_TOPIC) \
-#     .start()
+kafka_sink = df.writeStream \
+    .format("kafka") \
+    .option("kafka.bootstrap.servers", KAFKA_BOOTSTRAP_SERVERS) \
+    .option("topic", SINK_KAFKA_TOPIC) \
+    .option("checkpointLocation", "/checkpoint/user_clicks") \
+    .start()
+kafka_sink.awaitTermination()
 
 # -- DEBUG --
-streaming_debug_query = (
-    df.writeStream
-    .outputMode("update")
-    .format("console")
-    .start()
-)
-streaming_debug_query.awaitTermination()
+# streaming_debug_query = (
+#     df.writeStream
+#     .outputMode("update")
+#     .format("console")
+#     .start()
+# )
+# streaming_debug_query.awaitTermination()
 
