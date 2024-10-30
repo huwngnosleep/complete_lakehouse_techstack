@@ -48,6 +48,12 @@ x-airflow-common:
 
 services:
   postgres:
+    deploy:
+      resources:
+        reservations:
+          memory: 1G # Set memory reservation (minimum guaranteed)
+        limits:
+          memory: 1G
     image: postgres:13
     networks:
       default_net:
@@ -65,6 +71,12 @@ services:
     restart: always
 
   redis:
+    deploy:
+      resources:
+        reservations:
+          memory: 1G # Set memory reservation (minimum guaranteed)
+        limits:
+          memory: 1G
     # Redis is limited to 7.2-bookworm due to licencing change
     # https://redis.io/blog/redis-adopts-dual-source-available-licensing/
     image: redis:7.2-bookworm

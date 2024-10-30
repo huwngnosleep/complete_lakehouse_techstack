@@ -2,6 +2,12 @@ version: "3.8"
 
 services:
   superset:
+    deploy:
+      resources:
+        reservations:
+          memory: 1G # Set memory reservation (minimum guaranteed)
+        limits:
+          memory: 1G
     build: .
     container_name: superset
     restart: unless-stopped

@@ -6,7 +6,7 @@ from pyspark.sql.functions import *
 # Define the Kafka topic to read from
 KAFKA_BOOTSTRAP_SERVERS = "kafka:9092,kafka_broker_001:9092,kafka_broker_002:9092"
 SOURCE_KAFKA_TOPIC = "test"
-SINK_KAFKA_TOPIC = "user_click_fact"
+SINK_KAFKA_TOPIC = "user_click_fact_benchmark"
 
 # Create a Spark session
 IVY2_REPOSITORY = "/home/spark/"

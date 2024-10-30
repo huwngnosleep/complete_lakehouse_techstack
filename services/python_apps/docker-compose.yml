@@ -12,37 +12,21 @@ services:
   #     - ./code:/opt/code:ro
   #   # command: python3 /opt/code/generate_data.py
 
-  bikestore_order_api:
-    build: .
-    user: root
-    networks:
-      default_net:
-    container_name: bikestore_order_api
-    ports:
-      # flask server default port is 5000
-      - "5000:5000"
-    restart: always
-    environment:
-      - FLASK_ENV=development
-    volumes:
-      - ./code:/opt/code:ro
-    command: flask --app /opt/code/bikestore_order_api/server.py run --debug --host=0.0.0.0
-
-  kafka_click_generator:
-    build: .
-    user: root
-    networks:
-      default_net:
-    container_name: bikestore_order_api
-    ports:
-      # flask server default port is 5000
-      - "5000:5000"
-    restart: always
-    environment:
-      - FLASK_ENV=development
-    volumes:
-      - ./code:/opt/code:ro
-    command: flask --app /opt/code/bikestore_order_api/server.py run --debug --host=0.0.0.0
+  # bikestore_order_api:
+  #   build: .
+  #   user: root
+  #   networks:
+  #     default_net:
+  #   container_name: bikestore_order_api
+  #   ports:
+  #     # flask server default port is 5000
+  #     - "5000:5000"
+  #   restart: always
+  #   environment:
+  #     - FLASK_ENV=development
+  #   volumes:
+  #     - ./code:/opt/code:ro
+  #   command: flask --app /opt/code/bikestore_order_api/server.py run --debug --host=0.0.0.0
   
 networks:
   default_net:

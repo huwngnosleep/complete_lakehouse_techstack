@@ -2,6 +2,12 @@ version: '3.7'
 
 services:
   metastore-mysql:
+    deploy:
+      resources:
+        reservations:
+          memory: 1G # Set memory reservation (minimum guaranteed)
+        limits:
+          memory: 1G
     networks:
       default_net:
     image: mysql:5.7
@@ -22,6 +28,12 @@ services:
     restart: always
 
   metastore:
+    deploy:
+      resources:
+        reservations:
+          memory: 1G # Set memory reservation (minimum guaranteed)
+        limits:
+          memory: 1G
     networks:
       default_net:
     user: root
