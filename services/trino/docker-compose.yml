@@ -1,0 +1,26 @@
+services:
+  coodinator:
+    image: "trinodb/trino:476"
+    # networks:
+    #   - trino-net
+    user: root
+    ports:
+      - "8080:8080"
+    environment:
+      CATALOG_MANAGEMENT: dynamic
+      TRINO_HISTORY_FILE: /etc/trino/history-server/history.text
+      NODE_ID: coordinator
+    volumes:
+      - ./config/coordinator.properties:/etc/trino/config.properties
+  
+  worker1:
+    image: "trinodb/trino:476"
+    # networks:
+    #   - trino-net
+    user: root
+    environment:
+      CATALOG_MANAGEMENT: dynamic
+      NODE_ID: worker1
+    volumes:
+      - ./config/worker.properties:/etc/trino/config.properties
+      - ./config/node.properties:/etc/trino/node.properties
