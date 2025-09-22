@@ -1,0 +1,13 @@
+lakehouse_dev:
+  target: dev
+  outputs:
+    dev:
+      type: spark
+      method: thrift
+      host: 10.24.103.1
+      threads: 16
+      port: 8989
+      user: airflow
+      password: Airflow@123$461_dev
+      auth: LDAP
+      schema: default
